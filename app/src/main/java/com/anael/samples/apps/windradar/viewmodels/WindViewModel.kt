@@ -51,7 +51,14 @@ class WindViewModel @Inject constructor(
     fun refreshData() {
         viewModelScope.launch {
             try {
-                _windDataPrevisions.value = repository.getWindDataPrevision(latitude = lattitude!!, longitude = longitude!!, timezone = timezone ?: "").first()
+
+                //TODO: remove this, MOCKUP for now
+                val lat = lattitude ?: 52.03634
+                val lon = longitude ?: 4.32501
+                val tz = timezone ?: "Europe/Amsterdam"
+                _windDataPrevisions.value = repository.getWindDataPrevision(latitude = lat, longitude = lon, timezone = tz).first()
+
+//                _windDataPrevisions.value = repository.getWindDataPrevision(latitude = lattitude!!, longitude = longitude!!, timezone = timezone ?: "").first()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
