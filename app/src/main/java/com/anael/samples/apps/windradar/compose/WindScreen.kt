@@ -94,47 +94,50 @@ private fun WindScreen(
         if (pullToRefreshState.isRefreshing) {
             onPullToRefresh()
         }
-
-        SuggestionAddressTextField()
-        Box(
+        Column(
             modifier = Modifier
+                .fillMaxSize()
                 .padding(padding)
-                .nestedScroll(pullToRefreshState.nestedScrollConnection)
         ) {
-            weatherData.let { weatherAndUnits ->
+            // Text field stays at the top
+            SuggestionAddressTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            )
+
+            // Pull-to-refresh + grid takes the remaining space
+            Box(
+                modifier = Modifier
+                    .weight(1f) // <--- this makes it take remaining space
+                    .nestedScroll(pullToRefreshState.nestedScrollConnection)
+            ) {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(
-                        all = dimensionResource(id = R.dimen.card_side_margin)
-                    )
+                    contentPadding = PaddingValues(all = 8.dp)
                 ) {
-                    items(weatherAndUnits.hourlyWeatherData.time.size) { index ->
-                        val time = weatherAndUnits.hourlyWeatherData.time[index]
-                        val speed = weatherAndUnits.hourlyWeatherData.windSpeeds[index]
-                        val gust = weatherAndUnits.hourlyWeatherData.windGusts[index]
-                        val temp = weatherAndUnits.hourlyWeatherData.temperature[index]
-                        val windDirection = weatherAndUnits.hourlyWeatherData.windDirection[index]
-                        val cloudCover = weatherAndUnits.hourlyWeatherData.cloudCover[index]
-
+                    items(weatherData.hourlyWeatherData.time.size) { index ->
+                        val data = weatherData.hourlyWeatherData
                         WindItem(
-                            time = time,
-                            speed = speed,
-                            gust = gust,
-                            temp = temp,
-                            windDirection = windDirection,
-                            cloudCover = cloudCover,
-                            weatherUnit = weatherAndUnits.hourlyUnits
+                            time = data.time[index],
+                            speed = data.windSpeeds[index],
+                            gust = data.windGusts[index],
+                            temp = data.temperature[index],
+                            windDirection = data.windDirection[index],
+                            cloudCover = data.cloudCover[index],
+                            weatherUnit = weatherData.hourlyUnits
                         )
                     }
                 }
-            }
 
-            PullToRefreshContainer(
-                modifier = Modifier.align(Alignment.TopCenter),
-                state = pullToRefreshState
-            )
+                PullToRefreshContainer(
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    state = pullToRefreshState
+                )
+            }
         }
     }
+
 }
 
 @Composable
