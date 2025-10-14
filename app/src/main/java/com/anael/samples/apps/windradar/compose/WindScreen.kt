@@ -17,7 +17,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.anael.samples.apps.windradar.data.WindData
+import com.anael.samples.apps.windradar.data.WeatherData
 import com.google.samples.apps.sunflower.R
 import com.anael.samples.apps.windradar.viewmodels.WindViewModel
 import kotlinx.coroutines.flow.Flow
@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 fun WindScreen(viewModel: WindViewModel = hiltViewModel()) {
     WindScreen(
-            windData = viewModel.windDataPrevisions,
+            weatherData = viewModel.weatherDataPrevisions,
             onPullToRefresh = viewModel::refreshData
     )
 }
@@ -33,10 +33,10 @@ fun WindScreen(viewModel: WindViewModel = hiltViewModel()) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun WindScreen(
-    windData: Flow<WindData>,
+    weatherData: Flow<WeatherData>,
     onPullToRefresh: () -> Unit
 ) {
-    val data = windData.collectAsState(initial = null)
+    val data = weatherData.collectAsState(initial = null)
     val pullToRefreshState = rememberPullToRefreshState()
 
     Scaffold { padding ->

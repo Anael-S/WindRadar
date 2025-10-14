@@ -1,6 +1,6 @@
 package com.anael.samples.apps.windradar.api
 
-import com.anael.samples.apps.windradar.data.WindDataResponse
+import com.anael.samples.apps.windradar.data.WeatherDataResponse
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level
@@ -18,17 +18,23 @@ interface WeatherService {
     suspend fun fetchWindDataBasedOnLocation(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
-        @Query("hourly") hourly:String = "wind_speed_10m,wind_gusts_10m",
         @Query("timezone") timezone: String,
-    ): WindDataResponse
+        @Query("hourly") hourly:String = "wind_speed_10m,wind_gusts_10m,wind_direction_10m,cloud_cover",
+    ): WeatherDataResponse
+
+    @GET("forecast")
+    suspend fun fetchTemperatureDataBasedOnLocation(
+        @Query("latitude") latitude: Double,
+        @Query("longitude") longitude: Double,
+        @Query("timezone") timezone: String,
+        @Query("hourly") hourly:String = "temperature_2m",
+    ): WeatherDataResponse
 
     companion object {
         private const val BASE_URL = "https://api.open-meteo.com/v1/"
 
         fun create(): WeatherService {
-            //TODO: remove, for more logs:
-            val logger = HttpLoggingInterceptor().apply { level = Level.BODY }
-//            val logger = HttpLoggingInterceptor().apply { level = Level.BASIC }
+            val logger = HttpLoggingInterceptor().apply { level = Level.BASIC }
 
             val client = OkHttpClient.Builder()
                 .addInterceptor(logger)
