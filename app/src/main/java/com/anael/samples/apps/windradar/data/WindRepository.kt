@@ -30,7 +30,7 @@ class WindRepository @Inject constructor(private val service: WeatherService) {
                 latitude = latitude,
                 longitude = longitude,
                 timezone = timezone
-        ))
+        ).hourly)
 
     }
 }
