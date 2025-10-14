@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anael.samples.apps.windradar.data.WeatherData
+import com.anael.samples.apps.windradar.data.WeatherWithUnitData
 import com.anael.samples.apps.windradar.data.WindRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -24,8 +25,8 @@ class WindViewModel @Inject constructor(
     private var longitude: Double? = savedStateHandle["lattitude"]
 
 
-    private val _weatherDataPrevisions = MutableStateFlow<WeatherData?>(null)
-    val weatherDataPrevisions: Flow<WeatherData> get() = _weatherDataPrevisions.filterNotNull()
+    private val _weatherDataPrevisions = MutableStateFlow<WeatherWithUnitData?>(null)
+    val weatherDataPrevisions: Flow<WeatherWithUnitData> get() = _weatherDataPrevisions.filterNotNull()
 
     init {
         refreshData()

@@ -1,25 +1,10 @@
-##
-## Copyright 2024 Google LLC
-##
-## Licensed under the Apache License, Version 2.0 (the "License");
-## you may not use this file except in compliance with the License.
-## You may obtain a copy of the License at
-##
-##     https://www.apache.org/licenses/LICENSE-2.0
-##
-## Unless required by applicable law or agreed to in writing, software
-## distributed under the License is distributed on an "AS IS" BASIS,
-## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-## See the License for the specific language governing permissions and
-## limitations under the License.
-##
 [versions]
 accessibilityTestFramework = "4.1.1"
 activityCompose = "1.9.0"
 androidGradlePlugin = "8.4.0"
 benchmark = "1.2.4"
 # @keep
-compileSdk = "34"
+compileSdk = "35"
 # @keep
 compose-compiler = "1.5.13"
 composeBom = "2024.05.00"
@@ -45,7 +30,7 @@ lifecycle = "2.7.0"
 material = "1.13.0-alpha01"
 material3 = "1.2.1"
 # @keep
-minSdk = "24"
+minSdk = "31"
 monitor = "1.6.1"
 navigation = "2.7.7"
 okhttpLogging = "4.12.0"
@@ -73,6 +58,7 @@ androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = 
 androidx-compose-foundation = { module = "androidx.compose.foundation:foundation" }
 androidx-compose-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
+androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-compose-runtime = { module = "androidx.compose.runtime:runtime" }
 androidx-compose-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui" }

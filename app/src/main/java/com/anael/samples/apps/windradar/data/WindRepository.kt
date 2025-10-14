@@ -9,12 +9,12 @@ class WindRepository @Inject constructor(private val service: WeatherService) {
 
     fun getWindDataPrevision(latitude: Double,
                              longitude: Double,
-                             timezone: String): Flow<WeatherData> = flow {
+                             timezone: String): Flow<WeatherWithUnitData> = flow {
         emit(service.fetchWindDataBasedOnLocation(
                 latitude = latitude,
                 longitude = longitude,
                 timezone = timezone
-        ).hourlyWeatherData)
+        ))
 
     }
 }

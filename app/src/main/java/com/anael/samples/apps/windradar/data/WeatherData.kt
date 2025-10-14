@@ -9,6 +9,8 @@ data class WeatherData(
     @field:SerializedName("wind_speed_10m")  val windSpeeds: List<Double>,
     @field:SerializedName("wind_gusts_10m") val windGusts: List<Double>,
     @field:SerializedName("temperature_2m") val temperature: List<Double>,
-    @field:SerializedName("time") val time: List<String>
+    @field:SerializedName("time") val time: List<String>,
+    @field:SerializedName("wind_direction_10m") val windDirection: List<Int>,
+    @field:SerializedName("cloud_cover") val cloudCover: List<Int>,
 )
 
