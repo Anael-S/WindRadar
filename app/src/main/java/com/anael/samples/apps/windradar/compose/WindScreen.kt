@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,16 +23,24 @@ import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Thermostat
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -42,27 +51,43 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.anael.samples.apps.windradar.data.HourlyUnitsData
-import com.anael.samples.apps.windradar.data.WeatherData
+import com.anael.samples.apps.windradar.data.UiState
 import com.anael.samples.apps.windradar.data.WeatherWithUnitData
-import com.google.samples.apps.sunflower.R
+import com.anael.samples.apps.windradar.viewmodels.CitySuggestionViewModel
 import com.anael.samples.apps.windradar.viewmodels.WindViewModel
-import kotlinx.coroutines.flow.Flow
+import com.google.samples.apps.sunflower.R
 
 @Composable
 fun WindScreen(viewModel: WindViewModel = hiltViewModel()) {
-    WindScreen(
-        weatherData = viewModel.weatherDataPrevisions,
-        onPullToRefresh = viewModel::refreshData
-    )
+    val weatherState by viewModel.weatherState.collectAsState()
+
+    when (weatherState) {
+        is UiState.Loading -> {
+            // Show spinner
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        }
+        is UiState.Success -> {
+            WindScreen(
+                weatherData = (weatherState as UiState.Success).data,
+                onPullToRefresh = viewModel::refreshData
+            )
+        }
+        is UiState.Error -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("Error: ${(weatherState as UiState.Error).message}")
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun WindScreen(
-    weatherData: Flow<WeatherWithUnitData>,
+    weatherData: WeatherWithUnitData,
     onPullToRefresh: () -> Unit
 ) {
-    val data = weatherData.collectAsState(initial = null)
     val pullToRefreshState = rememberPullToRefreshState()
 
     Scaffold { padding ->
@@ -70,12 +95,13 @@ private fun WindScreen(
             onPullToRefresh()
         }
 
+        SuggestionAddressTextField()
         Box(
             modifier = Modifier
                 .padding(padding)
                 .nestedScroll(pullToRefreshState.nestedScrollConnection)
         ) {
-            data.value?.let { weatherAndUnits ->
+            weatherData.let { weatherAndUnits ->
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     contentPadding = PaddingValues(
@@ -237,3 +263,46 @@ fun WindInfoItem(icon: ImageVector, label: String, value: String) {
         )
     }
 }
+
+@Composable
+fun SuggestionAddressTextField(
+    modifier: Modifier = Modifier,
+    viewModel: CitySuggestionViewModel = hiltViewModel(),
+) {
+    val suggestions by viewModel.suggestions.collectAsState()
+    var text by remember { mutableStateOf("") }
+    var expanded by remember { mutableStateOf(false) }
+
+    Column(modifier) {
+        OutlinedTextField(
+            value = text,
+            onValueChange = { new ->
+                text = new
+                viewModel.onQueryChanged(new)
+                expanded = true
+            },
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text("Search") }
+        )
+
+        // show suggestions in a dropdown
+        DropdownMenu(
+            expanded = expanded && suggestions.isNotEmpty(),
+            onDismissRequest = { expanded = false },
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            suggestions.forEach { suggestion ->
+                DropdownMenuItem(
+                    text = { Text(suggestion.name) },
+                    onClick = {
+                        text = suggestion.name
+                        expanded = false
+                        viewModel.onQueryChanged(suggestion.name)
+                    }
+                )
+            }
+        }
+    }
+}
+

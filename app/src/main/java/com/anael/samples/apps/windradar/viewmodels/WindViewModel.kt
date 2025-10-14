@@ -3,13 +3,12 @@ package com.anael.samples.apps.windradar.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.anael.samples.apps.windradar.data.WeatherData
+import com.anael.samples.apps.windradar.data.UiState
 import com.anael.samples.apps.windradar.data.WeatherWithUnitData
 import com.anael.samples.apps.windradar.data.WindRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,32 +19,27 @@ class WindViewModel @Inject constructor(
     private val repository: WindRepository
 ) : ViewModel() {
 
-    private var timezone: String? = savedStateHandle["timezone"]
-    private var lattitude: Double? = savedStateHandle["lattitude"]
-    private var longitude: Double? = savedStateHandle["lattitude"]
+    private val timezone: String = savedStateHandle["timezone"] ?: "Europe/Amsterdam"
+    private val latitude: Double = savedStateHandle["latitude"] ?: 52.03634
+    private val longitude: Double = savedStateHandle["longitude"] ?: 4.32501
 
-
-    private val _weatherDataPrevisions = MutableStateFlow<WeatherWithUnitData?>(null)
-    val weatherDataPrevisions: Flow<WeatherWithUnitData> get() = _weatherDataPrevisions.filterNotNull()
+    private val _weatherState = MutableStateFlow<UiState<WeatherWithUnitData>>(UiState.Loading)
+    val weatherState: StateFlow<UiState<WeatherWithUnitData>> = _weatherState
 
     init {
         refreshData()
     }
 
-
     fun refreshData() {
         viewModelScope.launch {
+            _weatherState.value = UiState.Loading
             try {
-
-                //TODO: remove this, MOCKUP for now
-                val lat = lattitude ?: 52.03634
-                val lon = longitude ?: 4.32501
-                val tz = timezone ?: "Europe/Amsterdam"
-                _weatherDataPrevisions.value = repository.getWindDataPrevision(latitude = lat, longitude = lon, timezone = tz).first()
-
-//                _windDataPrevisions.value = repository.getWindDataPrevision(latitude = lattitude!!, longitude = longitude!!, timezone = timezone ?: "").first()
+                val data = repository
+                    .getWindDataPrevision(latitude = latitude, longitude = longitude, timezone = timezone)
+                    .first() // collect only one result from the repository
+                _weatherState.value = UiState.Success(data)
             } catch (e: Exception) {
-                e.printStackTrace()
+                _weatherState.value = UiState.Error(e.message ?: "Unknown error")
             }
         }
     }
