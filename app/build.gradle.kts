@@ -112,8 +112,7 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.androidx.profileinstaller)
     implementation(libs.protobuflib)
-    implementation("androidx.datastore:datastore:1.1.1")
-    implementation("androidx.datastore:datastore-core:1.1.1")
+    implementation(libs.androidx.datastore.core.android)
     kapt(libs.hilt.android.compiler)
 
 
