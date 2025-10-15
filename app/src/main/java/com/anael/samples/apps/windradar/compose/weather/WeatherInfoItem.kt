@@ -1,5 +1,8 @@
 package com.anael.samples.apps.windradar.compose.weather
 
+import AutoResizeText
+import android.R.attr.fontWeight
+import android.R.style
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,7 +32,9 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.anael.samples.apps.windradar.data.HourlyUnitsData
+
 
 @Composable
 fun HourlyWindItem(
@@ -73,15 +78,25 @@ fun HourlyWindItem(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val gustText = buildString {
+                    append(String.format("%.1f", gust))
+                    append('\u00A0') // NBSP so value+unit stay on one line
+                    append(weatherUnit.windGustsUnit)
+                }
+                val speedText = buildString {
+                    append(String.format("%.1f", speed))
+                    append('\u00A0') // NBSP so value+unit stay on one line
+                    append(weatherUnit.windSpeedsUnit)
+                }
                 WindInfoItem(
                     icon = Icons.Default.Air,
                     label = "Speed",
-                    value = String.format("%.1f %s", speed, weatherUnit.windSpeedsUnit)
+                    value = speedText
                 )
                 WindInfoItem(
                     icon = Icons.Default.Air,
                     label = "Gust",
-                    value = String.format("%.1f %s", gust, weatherUnit.windGustsUnit)
+                    value = gustText
                 )
             }
 
@@ -93,15 +108,25 @@ fun HourlyWindItem(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val tempText = buildString {
+                    append(String.format("%.1f", temp))
+                    append('\u00A0') // NBSP so value+unit stay on one line
+                    append(weatherUnit.temperatureUnit)
+                }
+                val cloudText = buildString {
+                    append(String.format("%d", cloudCover))
+                    append('\u00A0') // NBSP so value+unit stay on one line
+                    append(weatherUnit.cloudCoverUnits)
+                }
                 WindInfoItem(
                     icon = Icons.Default.Thermostat,
                     label = "Temp",
-                    value = String.format("%.1f %s", temp, weatherUnit.temperatureUnit)
+                    value = tempText
                 )
                 WindInfoItem(
                     icon = Icons.Default.Cloud,
                     label = "Clouds",
-                    value = "$cloudCover${weatherUnit.cloudCoverUnits}"
+                    value = cloudText
                 )
             }
 
@@ -150,10 +175,13 @@ fun WindInfoItem(icon: ImageVector, label: String, value: String) {
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        Text(
+        AutoResizeText(
             text = value,
             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
-            color = MaterialTheme.colorScheme.onSurface
+            maxLines = 1,
+            minFontSizeSp = 10f,
+            maxFontSizeSp = 14f,
+            stepSp = 1f
         )
     }
 }
