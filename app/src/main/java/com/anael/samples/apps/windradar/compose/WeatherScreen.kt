@@ -18,11 +18,11 @@ import com.anael.samples.apps.windradar.compose.weather.ForecastModeToggle
 import com.anael.samples.apps.windradar.compose.weather.WeatherContent
 import com.anael.samples.apps.windradar.viewmodels.CitySuggestionViewModel
 import com.anael.samples.apps.windradar.viewmodels.SelectedCityViewModel
-import com.anael.samples.apps.windradar.viewmodels.WindViewModel
+import com.anael.samples.apps.windradar.viewmodels.WeatherViewModel
 
 @Composable
 fun WeatherScreen(
-    viewModel: WindViewModel = hiltViewModel(),
+    viewModel: WeatherViewModel = hiltViewModel(),
     citySuggestionViewModel: CitySuggestionViewModel = hiltViewModel(),
     selectedCityVm: SelectedCityViewModel = hiltViewModel(),
 ) {

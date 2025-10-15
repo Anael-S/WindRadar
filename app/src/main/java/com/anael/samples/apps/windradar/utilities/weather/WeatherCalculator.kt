@@ -44,7 +44,7 @@ object WeatherCalculator {
         maxDayForward: Int = 1
     ): AlertResult {
         ensureInitialized(context)
-        val timestamps = hourlyWeatherData.time
+        val timestamps = hourlyWeatherData.timeFormatted
         val windSpeeds = hourlyWeatherData.windSpeeds
         val gustSpeeds = hourlyWeatherData.windGusts
 

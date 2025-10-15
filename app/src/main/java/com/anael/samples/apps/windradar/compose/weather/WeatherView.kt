@@ -82,9 +82,9 @@ fun WeatherContent(
                         when (val response = weatherState.data) {
                             is ForecastResult.Hourly -> {
                                 val data = response.data.hourlyWeatherData
-                                items(data.time.size) { index ->
+                                items(data.timeFormatted.size) { index ->
                                     HourlyWeatherInfoItem(
-                                        time = data.time[index],
+                                        time = data.timeFormatted[index],
                                         speed = data.windSpeeds[index],
                                         gust = data.windGusts[index],
                                         temp = data.temperature[index],
