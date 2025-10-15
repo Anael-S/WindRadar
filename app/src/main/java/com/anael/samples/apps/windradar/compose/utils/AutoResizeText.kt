@@ -17,7 +17,7 @@ fun AutoResizeText(
     maxLines: Int = 1,
     minFontSizeSp: Float = 10f,
     maxFontSizeSp: Float = 14f,
-    stepSp: Float = 1f
+    stepSp: Float = 0.1f
 ) {
     val measurer = rememberTextMeasurer()
 

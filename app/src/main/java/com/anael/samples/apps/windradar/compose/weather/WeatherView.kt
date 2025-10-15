@@ -22,6 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.anael.samples.apps.windradar.data.UiState
+import com.anael.samples.apps.windradar.ui.weather.DailyWeatherInfoItem
+import com.anael.samples.apps.windradar.ui.weather.HourlyWeatherInfoItem
 import com.anael.samples.apps.windradar.viewmodels.ForecastResult
 
 
@@ -88,7 +90,7 @@ fun WeatherContent(
                                         temp = data.temperature[index],
                                         windDirection = data.windDirection[index],
                                         cloudCover = data.cloudCover[index],
-                                        weatherUnit = response.data.hourlyUnits
+                                        units = response.data.hourlyUnits
                                     )
                                 }
                             }

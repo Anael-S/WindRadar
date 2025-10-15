@@ -15,6 +15,6 @@ data class HourlyWeatherData(
     @field:SerializedName("cloud_cover") val cloudCover: List<Int>,
 ) {
     val time: List<String>
-        get() = _time.map { DateUtils.formatToEuropean(it) }
+        get() = _time.map { DateUtils.formatToDayAndTime(it) }
 }
 

@@ -15,6 +15,6 @@ data class DailyWeatherData(
     @field:SerializedName("rain_sum") val rainSum: List<Double>,
 ) {
     val time: List<String>
-        get() = _time.map { DateUtils.formatToEuropean(it) }
+        get() = _time.map { DateUtils.formatToDayWithOrdinalAndMonth(it) }
 }
 
