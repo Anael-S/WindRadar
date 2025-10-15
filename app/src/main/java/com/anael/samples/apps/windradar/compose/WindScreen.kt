@@ -1,5 +1,6 @@
 package com.anael.samples.apps.windradar.compose
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,7 +27,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -39,17 +39,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.PopupProperties
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.anael.samples.apps.windradar.data.GeoResultData
 import com.anael.samples.apps.windradar.data.HourlyUnitsData
 import com.anael.samples.apps.windradar.data.UiState
 import com.anael.samples.apps.windradar.data.WeatherWithUnitData
@@ -57,20 +65,42 @@ import com.anael.samples.apps.windradar.viewmodels.CitySuggestionViewModel
 import com.anael.samples.apps.windradar.viewmodels.WindViewModel
 
 @Composable
-fun WindScreen(viewModel: WindViewModel = hiltViewModel()) {
+fun WindScreen(
+    viewModel: WindViewModel = hiltViewModel(),
+    citySuggestionViewModel: CitySuggestionViewModel = hiltViewModel(),
+) {
     val weatherState by viewModel.weatherState.collectAsState()
 
-    WindScreen(
-        onPullToRefresh = viewModel::refreshData,
-        weatherState = weatherState
-    )
+    Scaffold { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            key("SuggestionField") {
+                SuggestionAddressTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    viewModel = citySuggestionViewModel
+                )
+            }
+
+            WeatherContent(
+                weatherState = weatherState,
+                onPullToRefresh = viewModel::refreshData,
+            )
+        }
+    }
 }
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun WindScreen(
-    onPullToRefresh: () -> Unit,
-    weatherState: UiState<WeatherWithUnitData>
+fun WeatherContent(
+    weatherState: UiState<WeatherWithUnitData>,
+    onPullToRefresh: () -> Unit
 ) {
     // Pull-to-refresh gesture state
     val pullToRefreshState = rememberPullToRefreshState()
@@ -94,75 +124,65 @@ private fun WindScreen(
         }
     }
 
-    Scaffold { padding ->
-        Column(
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
+                .weight(1f)
+                .nestedScroll(pullToRefreshState.nestedScrollConnection)
         ) {
-            SuggestionAddressTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            )
-
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .nestedScroll(pullToRefreshState.nestedScrollConnection)
-            ) {
-                when (weatherState) {
-                    is UiState.Loading -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
+            when (weatherState) {
+                is UiState.Loading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
                     }
+                }
 
-                    is UiState.Success -> {
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(2),
-                            contentPadding = PaddingValues(all = 8.dp)
-                        ) {
-                            val data = weatherState.data.hourlyWeatherData
-                            items(data.time.size) { index ->
-                                WindItem(
-                                    time = data.time[index],
-                                    speed = data.windSpeeds[index],
-                                    gust = data.windGusts[index],
-                                    temp = data.temperature[index],
-                                    windDirection = data.windDirection[index],
-                                    cloudCover = data.cloudCover[index],
-                                    weatherUnit = weatherState.data.hourlyUnits
-                                )
-                            }
-                        }
-                    }
-
-                    is UiState.Error -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("Error: ${(weatherState as UiState.Error).message}")
+                is UiState.Success -> {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        contentPadding = PaddingValues(all = 8.dp)
+                    ) {
+                        val data = weatherState.data.hourlyWeatherData
+                        items(data.time.size) { index ->
+                            WindItem(
+                                time = data.time[index],
+                                speed = data.windSpeeds[index],
+                                gust = data.windGusts[index],
+                                temp = data.temperature[index],
+                                windDirection = data.windDirection[index],
+                                cloudCover = data.cloudCover[index],
+                                weatherUnit = weatherState.data.hourlyUnits
+                            )
                         }
                     }
                 }
 
-                // Only show indicator if refreshing or pulled down
-                if (pullToRefreshState.isRefreshing || pullToRefreshState.verticalOffset > 0f) {
-                    PullToRefreshContainer(
-                        state = pullToRefreshState,
-                        modifier = Modifier.align(Alignment.TopCenter)
-                    )
+                is UiState.Error -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("Error: ${(weatherState as UiState.Error).message}")
+                    }
                 }
+            }
+
+            // Only show indicator if refreshing or pulled down
+            if (pullToRefreshState.isRefreshing || pullToRefreshState.verticalOffset > 0f) {
+                PullToRefreshContainer(
+                    state = pullToRefreshState,
+                    modifier = Modifier.align(Alignment.TopCenter)
+                )
             }
         }
     }
 }
-
 
 @Composable
 fun WindItem(
@@ -294,42 +314,96 @@ fun WindInfoItem(icon: ImageVector, label: String, value: String) {
 @Composable
 fun SuggestionAddressTextField(
     modifier: Modifier = Modifier,
-    viewModel: CitySuggestionViewModel = hiltViewModel(),
+    viewModel: CitySuggestionViewModel,
 ) {
-    val suggestions by viewModel.suggestions.collectAsState()
-    var text by remember { mutableStateOf("") }
-    var expanded by remember { mutableStateOf(false) }
+    val citySuggestions by viewModel.suggestions.collectAsState()
+    val cityQuery by viewModel.query.collectAsState()
+    var expanded by rememberSaveable { mutableStateOf(false) }
 
     Column(modifier) {
-        OutlinedTextField(
-            value = text,
-            onValueChange = { new ->
-                text = new
+        AddressInputField(
+            text = cityQuery,
+            onTextChange = { new ->
                 viewModel.onQueryChanged(new)
                 expanded = true
-            },
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text("Search") }
+            }
         )
 
-        // show suggestions in a dropdown
-        DropdownMenu(
-            expanded = expanded && suggestions.isNotEmpty(),
-            onDismissRequest = { expanded = false },
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            suggestions.forEach { suggestion ->
-                DropdownMenuItem(
-                    text = { Text(suggestion.name) },
-                    onClick = {
-                        text = suggestion.name
-                        expanded = false
-                        viewModel.onQueryChanged(suggestion.name)
-                    }
-                )
+        SuggestionsDropdown(
+            suggestions = citySuggestions,
+            expanded = expanded,
+            onSelect = { suggestion ->
+                viewModel.onQueryChanged(suggestion.name)
+                expanded = false
             }
+        )
+    }
+}
+
+@Composable
+fun AddressInputField(
+    text: String,
+    onTextChange: (String) -> Unit,
+) {
+    // keep a local TextFieldValue to preserve composition/selection
+    var localValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue(text))
+    }
+
+    // sync when external text changes (ViewModel -> UI)
+    LaunchedEffect(text) {
+        if (text != localValue.text) {
+            // preserve selection if possible
+            localValue = localValue.copy(text = text)
+        }
+    }
+
+    OutlinedTextField(
+        value = localValue,
+        onValueChange = { newValue ->
+            localValue = newValue
+            onTextChange(newValue.text) // push String to ViewModel
+        },
+        label = { Text("Search") },
+        modifier = Modifier
+            .fillMaxWidth()
+            .onFocusChanged { /* no extra re-requesting */ },
+        singleLine = true,
+    )
+}
+
+
+
+
+@Composable
+fun SuggestionsDropdown(
+    suggestions: List<GeoResultData>,
+    expanded: Boolean,
+    onSelect: (GeoResultData) -> Unit,
+) {
+    DropdownMenu(
+        expanded = expanded && suggestions.isNotEmpty(),
+        onDismissRequest = {},
+        modifier = Modifier.fillMaxWidth(),
+        properties = PopupProperties(focusable = false)
+    ) {
+        suggestions.forEach { suggestion ->
+            val displayText = listOfNotNull(
+                suggestion.name,
+                suggestion.admin1,
+                suggestion.country
+            ).joinToString(", ")
+
+            Text(
+                text = displayText,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .clickable { onSelect(suggestion) }
+            )
         }
     }
 }
+
+
 
