@@ -1,8 +1,8 @@
 package com.anael.samples.apps.windradar.data
 
 import androidx.datastore.core.DataStore
-import com.anael.samples.apps.windradar.data.model.CitySelection
 import com.anael.samples.apps.windradar.datastore.proto.CitySelectionProto
+import com.anael.samples.apps.windradar.data.model.CitySelection
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -15,13 +15,12 @@ class CitySelectionRepositoryImpl @Inject constructor(
 
   override val selectedCity: Flow<CitySelection?> =
     store.data.map { p ->
-      // (name + coords) must exist; timezone/country optional
       if (p.name.isBlank() || (p.latitude == 0.0 && p.longitude == 0.0)) null
       else CitySelection(
-        name = p.name,
-        latitude = p.latitude,
-        longitude = p.longitude,
-        timezone = p.timezone.ifBlank { null },
+        name        = p.name,
+        latitude    = p.latitude,
+        longitude   = p.longitude,
+        timezone    = p.timezone.ifBlank { null },
       )
     }
 

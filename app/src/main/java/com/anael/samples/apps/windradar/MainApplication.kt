@@ -2,7 +2,6 @@ package com.anael.samples.apps.windradar
 
 import android.app.Application
 import androidx.work.Configuration
-import com.google.samples.apps.sunflower.BuildConfig
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp

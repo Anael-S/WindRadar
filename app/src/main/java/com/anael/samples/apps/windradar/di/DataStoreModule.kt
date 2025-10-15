@@ -3,6 +3,7 @@ package com.anael.samples.apps.windradar.di
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
+import androidx.datastore.dataStoreFile
 import com.anael.samples.apps.windradar.datastore.CitySelectionSerializer
 import com.anael.samples.apps.windradar.datastore.proto.CitySelectionProto
 import dagger.Module
@@ -15,6 +16,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DataStoreModule {
+
   @Provides @Singleton
   fun provideCitySelectionDataStore(
     @ApplicationContext context: Context

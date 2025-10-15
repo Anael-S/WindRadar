@@ -15,8 +15,13 @@ data class GeoResultData(
     val timezone: String
 ) {
     fun toCitySelection(): CitySelection {
+        val fullName = listOfNotNull(
+            name,
+            admin1,
+            country
+        ).joinToString(", ")
         return CitySelection(
-            name = name ?: "",
+            name = fullName ?: "",
             latitude = latitude,
             longitude = longitude,
             timezone = timezone,

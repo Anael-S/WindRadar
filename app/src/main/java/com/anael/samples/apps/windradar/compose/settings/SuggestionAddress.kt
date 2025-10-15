@@ -87,7 +87,7 @@ fun AddressInputField(
             localValue = newValue
             onTextChange(newValue.text) // push String to ViewModel
         },
-        label = { Text("Search") },
+        label = { Text("City") },
         modifier = Modifier
             .fillMaxWidth()
             .onFocusChanged { /* no extra re-requesting */ },
