@@ -13,6 +13,8 @@ data class DailyWeatherData(
     @field:SerializedName("wind_speed_10m_max") val windSpeeds: List<Double>,
     @field:SerializedName("wind_gusts_10m_max") val windGusts: List<Double>,
     @field:SerializedName("rain_sum") val rainSum: List<Double>,
+    @field:SerializedName("sunshine_duration") val sunshineDuration: List<Double>,
+    @field:SerializedName("daylight_duration") val daylightDuration: List<Double>,
 ) {
     val time: List<String>
         get() = _time.map { DateUtils.formatToDayWithOrdinalAndMonth(it) }

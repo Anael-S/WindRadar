@@ -11,5 +11,8 @@ data class DailyUnitsData(
     @field:SerializedName("wind_gusts_10m_max") val windGustsUnit: String,
     @field:SerializedName("rain_sum") val rainSumUnit: String,
     @field:SerializedName("time") val time: String,
+    @field:SerializedName("sunshine_duration") val sunshineDurationUnit: String,
+    @field:SerializedName("daylight_duration") val daylightDurationUnit: String,
+
 )
 

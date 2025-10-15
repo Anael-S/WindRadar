@@ -28,7 +28,7 @@ interface WeatherService {
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
         @Query("timezone") timezone: String,
-        @Query("daily") hourly:String = "temperature_2m_min,temperature_2m_max,wind_speed_10m_max,wind_gusts_10m_max,rain_sum",
+        @Query("daily") hourly:String = "temperature_2m_min,temperature_2m_max,wind_speed_10m_max,wind_gusts_10m_max,rain_sum,sunshine_duration,daylight_duration",
     ): DailyWeatherWithUnitData
 
     companion object {

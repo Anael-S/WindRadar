@@ -104,6 +104,8 @@ fun WeatherContent(
                                         windSpeedMax = dailyData.windSpeeds[index],
                                         windGustMax = dailyData.windGusts[index],
                                         rainSum = dailyData.rainSum[index],
+                                        sunshineDuration = dailyData.sunshineDuration[index],
+                                        daylightDuration = dailyData.daylightDuration[index],
                                         units = response.data.dailyUnits
                                     )
                                 }

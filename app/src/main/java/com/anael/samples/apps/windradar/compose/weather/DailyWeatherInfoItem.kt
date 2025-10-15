@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.anael.samples.apps.windradar.compose.weather.TemperatureBand
 import com.anael.samples.apps.windradar.compose.weather.WeatherStatItem
 import com.anael.samples.apps.windradar.compose.weather.rememberSkyGradient
+import com.anael.samples.apps.windradar.compose.weather.sunshineToBrightnessFactor
 import com.anael.samples.apps.windradar.compose.weather.valueWithUnit
 import com.anael.samples.apps.windradar.data.DailyUnitsData
 
@@ -29,11 +30,13 @@ fun DailyWeatherInfoItem(
     windSpeedMax: Double,
     windGustMax: Double,
     rainSum: Double,
+    sunshineDuration: Double,
+    daylightDuration: Double,
     units: DailyUnitsData,
     modifier: Modifier = Modifier,
     cornerRadius: Dp = 22.dp,
-    daylight: Float = 0.75f
 ) {
+    val daylight = sunshineToBrightnessFactor(sunshineDuration, daylightDuration)
     val skyBrush = rememberSkyGradient(daylight)
 
     Box(

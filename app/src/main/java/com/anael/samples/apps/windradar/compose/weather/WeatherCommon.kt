@@ -30,6 +30,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import kotlin.math.PI
+import kotlin.math.pow
 import kotlin.math.sin
 
 
@@ -152,14 +153,44 @@ fun computeDaylightFactor(raw: String): Float {
     return 1f
 }
 
+/**
+ * Converts a day's sunshine duration (in seconds) and daylight duration (sunrise→sunset, in seconds)
+ * into a perceptual brightness factor [0f..1f].
+ *
+ * @param sunshineSeconds   How many seconds of sunshine occurred (e.g. 25200 = 7h).
+ * @param daylightSeconds   Total daylight available that day (e.g. 43200 = 12h).
+ * @return brightness factor usable for gradients, alpha, etc.
+ *
+ * Behavior:
+ *  - 0 → pitch dark (no sun)
+ *  - 0.5 → about half the day sunny
+ *  - 1 → fully bright day (all daylight was sunshine)
+ */
+fun sunshineToBrightnessFactor(
+    sunshineSeconds: Double,
+    daylightSeconds: Double
+): Float {
+    if (daylightSeconds <= 0.0) return 0f // avoid division by zero
+    val ratio = (sunshineSeconds / daylightSeconds)
+        .coerceIn(0.0, 1.0)
+
+    // Apply a soft gamma to make medium-sunny days feel a bit brighter (human perception)
+    val gamma = 0.7f
+    val adjusted = ratio.toFloat().pow(1f / gamma)
+
+    // Add a subtle ambient floor so even 0-sun days aren’t completely black
+    val ambientMin = 0.15f
+
+    return (ambientMin + (1f - ambientMin) * adjusted)
+        .coerceIn(0f, 1f)
+}
+
 private fun hourToDaylight(hour: Int, minute: Int): Float {
     val hourF = hour + minute / 60f
     // Sine curve: 0 at ~06:00 & ~18:00, peak 1 at 12:00
     val radians = PI * (hourF - 6f) / 12f
     return sin(radians).toFloat().coerceIn(0f, 1f)
 }
-
-
 
 private fun lerpColor(start: Color, end: Color, t: Float): Color =
     Color(
