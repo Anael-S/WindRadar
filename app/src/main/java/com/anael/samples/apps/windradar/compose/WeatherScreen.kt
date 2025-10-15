@@ -21,7 +21,7 @@ import com.anael.samples.apps.windradar.viewmodels.SelectedCityViewModel
 import com.anael.samples.apps.windradar.viewmodels.WindViewModel
 
 @Composable
-fun WindScreen(
+fun WeatherScreen(
     viewModel: WindViewModel = hiltViewModel(),
     citySuggestionViewModel: CitySuggestionViewModel = hiltViewModel(),
     selectedCityVm: SelectedCityViewModel = hiltViewModel(),
