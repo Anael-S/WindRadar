@@ -1,6 +1,5 @@
 package com.anael.samples.apps.windradar.ui.weather
 
-import AutoResizeText
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,10 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.anael.samples.apps.windradar.compose.weather.TemperatureBand
+import com.anael.samples.apps.windradar.compose.weather.TemperatureItemWithIcon
 import com.anael.samples.apps.windradar.compose.weather.WeatherStatItem
 import com.anael.samples.apps.windradar.compose.weather.rememberSkyGradient
 import com.anael.samples.apps.windradar.compose.weather.sunshineToBrightnessFactor
@@ -69,9 +67,10 @@ fun DailyWeatherInfoItem(
 
                 Spacer(Modifier.height(8.dp))
 
-                TemperatureBand(
+                TemperatureItemWithIcon(
                     minText = valueWithUnit(tempMin, units.temperatureUnit, 0),
-                    maxText = valueWithUnit(tempMax, units.temperatureUnit, 0)
+                    maxText = valueWithUnit(tempMax, units.temperatureUnit, 0),
+                    brightnessFactor = daylight
                 )
 
                 Spacer(Modifier.height(8.dp))
