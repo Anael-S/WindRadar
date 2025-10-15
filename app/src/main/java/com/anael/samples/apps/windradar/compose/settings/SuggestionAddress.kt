@@ -27,6 +27,7 @@ import com.anael.samples.apps.windradar.viewmodels.CitySuggestionViewModel
 fun SuggestionAddressTextField(
     modifier: Modifier = Modifier,
     viewModel: CitySuggestionViewModel,
+    onPersistSelected: (GeoResultData) -> Unit,
 ) {
     val citySuggestions by viewModel.suggestions.collectAsState()
     val cityQuery by viewModel.query.collectAsState()
@@ -53,6 +54,7 @@ fun SuggestionAddressTextField(
                 ).joinToString(", ")
 
                 viewModel.onQueryChanged(fullAddress)
+                onPersistSelected(suggestion)
                 expanded = false
                 focusManager.clearFocus()
             }

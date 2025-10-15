@@ -1,5 +1,6 @@
 package com.anael.samples.apps.windradar.data
 
+import com.anael.samples.apps.windradar.data.model.CitySelection
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -12,5 +13,14 @@ data class GeoResultData(
     val latitude: Double,
     val longitude: Double,
     val timezone: String
-)
+) {
+    fun toCitySelection(): CitySelection {
+        return CitySelection(
+            name = name ?: "",
+            latitude = latitude,
+            longitude = longitude,
+            timezone = timezone,
+        )
+    }
+}
 

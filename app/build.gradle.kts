@@ -4,6 +4,8 @@ plugins {
   alias(libs.plugins.ksp)
   alias(libs.plugins.hilt)
   alias(libs.plugins.compose.compiler)
+  alias(libs.plugins.protobuf)
+  kotlin("kapt")
 }
 
 android {
@@ -89,6 +91,7 @@ androidComponents {
 }
 
 dependencies {
+  implementation(libs.androidx.datastore.core.android)
   ksp(libs.androidx.room.compiler)
   ksp(libs.hilt.android.compiler)
   implementation(libs.androidx.core.ktx)
@@ -108,6 +111,8 @@ dependencies {
   implementation(libs.hilt.android)
   implementation(libs.hilt.navigation.compose)
   implementation(libs.androidx.profileinstaller)
+  implementation(libs.protobuflib)
+  kapt("com.google.dagger:hilt-compiler:2.52")
 
   // Compose
   implementation(platform(libs.androidx.compose.bom))
@@ -145,6 +150,13 @@ dependencies {
   androidTestImplementation(libs.accessibility.test.framework)
   androidTestImplementation(libs.kotlinx.coroutines.test)
   testImplementation(libs.junit)
+}
+
+protobuf {
+  protoc { artifact = "com.google.protobuf:protoc:3.25.3" }
+  generateProtoTasks {
+    all().forEach { t -> t.builtins { create("java") { option("lite") } } }
+  }
 }
 
 fun getUnsplashAccess(): String? {
