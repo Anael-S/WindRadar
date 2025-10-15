@@ -52,6 +52,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -319,6 +320,7 @@ fun SuggestionAddressTextField(
     val citySuggestions by viewModel.suggestions.collectAsState()
     val cityQuery by viewModel.query.collectAsState()
     var expanded by rememberSaveable { mutableStateOf(false) }
+    val focusManager = LocalFocusManager.current
 
     Column(modifier) {
         AddressInputField(
@@ -330,15 +332,23 @@ fun SuggestionAddressTextField(
         )
 
         SuggestionsDropdown(
-            suggestions = citySuggestions?: emptyList(),
+            suggestions = citySuggestions,
             expanded = expanded,
             onSelect = { suggestion ->
-                viewModel.onQueryChanged(suggestion.name)
+                val fullAddress = listOfNotNull(
+                    suggestion.name,
+                    suggestion.admin1,
+                    suggestion.country
+                ).joinToString(", ")
+
+                viewModel.onQueryChanged(fullAddress)
                 expanded = false
+                focusManager.clearFocus()
             }
         )
     }
 }
+
 
 @Composable
 fun AddressInputField(
