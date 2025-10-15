@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Thermostat
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
@@ -19,6 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.anael.samples.apps.windradar.compose.weather.WeatherStatItem
+import com.anael.samples.apps.windradar.compose.weather.computeDaylightFactor
 import com.anael.samples.apps.windradar.compose.weather.rememberSkyGradient
 import com.anael.samples.apps.windradar.compose.weather.valueWithUnit
 import com.anael.samples.apps.windradar.data.HourlyUnitsData
@@ -34,8 +36,9 @@ fun HourlyWeatherInfoItem(
     units: HourlyUnitsData,
     modifier: Modifier = Modifier,
     cornerRadius: Dp = 22.dp,
-    daylight: Float = 0.75f
 ) {
+    // 0 = night, 1 = brightest at noon (smooth sine curve, zero near ~6:00 & ~18:00)
+    val daylight = remember(time) { computeDaylightFactor(time) }
     val skyBrush = rememberSkyGradient(daylight)
 
     Box(
