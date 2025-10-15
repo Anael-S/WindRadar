@@ -1,46 +1,54 @@
 package com.anael.samples.apps.windradar.viewmodels
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anael.samples.apps.windradar.data.UiState
 import com.anael.samples.apps.windradar.data.WeatherWithUnitData
 import com.anael.samples.apps.windradar.data.WindRepository
+import com.anael.samples.apps.windradar.data.CitySelectionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.flow.*
+import java.time.ZoneId
 
 @HiltViewModel
 class WindViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
-    private val repository: WindRepository
+    private val repository: WindRepository,
+    cityRepo: CitySelectionRepository
 ) : ViewModel() {
 
-    private val timezone: String = savedStateHandle["timezone"] ?: "Europe/Amsterdam"
-    private val latitude: Double = savedStateHandle["latitude"] ?: 52.03634
-    private val longitude: Double = savedStateHandle["longitude"] ?: 4.32501
+    private val refresh = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 
-    private val _weatherState = MutableStateFlow<UiState<WeatherWithUnitData>>(UiState.Loading)
-    val weatherState: StateFlow<UiState<WeatherWithUnitData>> = _weatherState
-
-    init {
-        refreshData()
-    }
+    val weatherState: StateFlow<UiState<WeatherWithUnitData>> =
+        combine(
+            // emit once at start and on every manual refresh
+            refresh.onStart { emit(Unit) },
+            // latest persisted city selection
+            cityRepo.selectedCity.distinctUntilChanged()
+        ) { _, city -> city }
+            .flatMapLatest { city ->
+                if (city == null) {
+                    flowOf(UiState.Error("No city selected"))
+                } else {
+                    val tz = city.timezone ?: runCatching { ZoneId.systemDefault().id }.getOrElse { "UTC" }
+                    repository
+                        .getWindDataPrevision(
+                            latitude = city.latitude,
+                            longitude = city.longitude,
+                            timezone = tz
+                        )
+                        .map<WeatherWithUnitData, UiState<WeatherWithUnitData>> { UiState.Success(it) }
+                        .onStart { emit(UiState.Loading) }
+                        .catch { emit(UiState.Error(it.message ?: "Unknown error")) }
+                }
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = UiState.Loading
+            )
 
     fun refreshData() {
-        viewModelScope.launch {
-            _weatherState.value = UiState.Loading
-            try {
-                val data = repository
-                    .getWindDataPrevision(latitude = latitude, longitude = longitude, timezone = timezone)
-                    .first() // collect only one result from the repository
-                _weatherState.value = UiState.Success(data)
-            } catch (e: Exception) {
-                _weatherState.value = UiState.Error(e.message ?: "Unknown error")
-            }
-        }
+        refresh.tryEmit(Unit)
     }
 }
