@@ -22,13 +22,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.anael.samples.apps.windradar.data.UiState
-import com.anael.samples.apps.windradar.data.WeatherWithUnitData
+import com.anael.samples.apps.windradar.data.HourlyWeatherWithUnitData
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherContent(
-    weatherState: UiState<WeatherWithUnitData>,
+    weatherState: UiState<HourlyWeatherWithUnitData>,
     onPullToRefresh: () -> Unit
 ) {
     // Pull-to-refresh gesture state

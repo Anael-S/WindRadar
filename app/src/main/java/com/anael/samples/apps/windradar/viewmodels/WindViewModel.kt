@@ -3,7 +3,7 @@ package com.anael.samples.apps.windradar.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anael.samples.apps.windradar.data.UiState
-import com.anael.samples.apps.windradar.data.WeatherWithUnitData
+import com.anael.samples.apps.windradar.data.HourlyWeatherWithUnitData
 import com.anael.samples.apps.windradar.data.WindRepository
 import com.anael.samples.apps.windradar.data.CitySelectionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +19,7 @@ class WindViewModel @Inject constructor(
 
     private val refresh = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 
-    val weatherState: StateFlow<UiState<WeatherWithUnitData>> =
+    val weatherState: StateFlow<UiState<HourlyWeatherWithUnitData>> =
         combine(
             // emit once at start and on every manual refresh
             refresh.onStart { emit(Unit) },
@@ -30,14 +30,14 @@ class WindViewModel @Inject constructor(
                 if (city == null) {
                     flowOf(UiState.Error("No city selected"))
                 } else {
-                    val tz = city.timezone ?: runCatching { ZoneId.systemDefault().id }.getOrElse { "UTC" }
+                    val timezone = city.timezone ?: runCatching { ZoneId.systemDefault().id }.getOrElse { "UTC" }
                     repository
-                        .getWindDataPrevision(
+                        .getHourlyWindDataPrevision(
                             latitude = city.latitude,
                             longitude = city.longitude,
-                            timezone = tz
+                            timezone = timezone
                         )
-                        .map<WeatherWithUnitData, UiState<WeatherWithUnitData>> { UiState.Success(it) }
+                        .map<HourlyWeatherWithUnitData, UiState<HourlyWeatherWithUnitData>> { UiState.Success(it) }
                         .onStart { emit(UiState.Loading) }
                         .catch { emit(UiState.Error(it.message ?: "Unknown error")) }
                 }

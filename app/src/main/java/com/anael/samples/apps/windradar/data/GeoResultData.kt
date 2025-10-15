@@ -1,7 +1,6 @@
 package com.anael.samples.apps.windradar.data
 
 import com.anael.samples.apps.windradar.data.model.CitySelection
-import com.google.gson.annotations.SerializedName
 
 /**
  * Data class that represents the city data from the city sugestion API

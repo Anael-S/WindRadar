@@ -7,14 +7,23 @@ import javax.inject.Inject
 
 class WindRepository @Inject constructor(private val service: WeatherService) {
 
-    fun getWindDataPrevision(latitude: Double,
-                             longitude: Double,
-                             timezone: String): Flow<WeatherWithUnitData> = flow {
-        emit(service.fetchWindDataBasedOnLocation(
+    fun getHourlyWindDataPrevision(latitude: Double,
+                                   longitude: Double,
+                                   timezone: String): Flow<HourlyWeatherWithUnitData> = flow {
+        emit(service.fetchHourlyWindDataBasedOnLocation(
                 latitude = latitude,
                 longitude = longitude,
                 timezone = timezone
         ))
+    }
 
+    fun getDailyWindDataPrevision(latitude: Double,
+                                   longitude: Double,
+                                   timezone: String): Flow<HourlyWeatherWithUnitData> = flow {
+        emit(service.fetchDailyWindDataBasedOnLocation(
+            latitude = latitude,
+            longitude = longitude,
+            timezone = timezone
+        ))
     }
 }

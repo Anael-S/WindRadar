@@ -1,6 +1,6 @@
 package com.anael.samples.apps.windradar.api
 
-import com.anael.samples.apps.windradar.data.WeatherWithUnitData
+import com.anael.samples.apps.windradar.data.HourlyWeatherWithUnitData
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level
@@ -15,12 +15,12 @@ import retrofit2.http.Query
 interface WeatherService {
 
     @GET("forecast")
-    suspend fun fetchWindDataBasedOnLocation(
+    suspend fun fetchHourlyWindDataBasedOnLocation(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double,
         @Query("timezone") timezone: String,
         @Query("hourly") hourly:String = "wind_speed_10m,wind_gusts_10m,wind_direction_10m,cloud_cover,temperature_2m",
-    ): WeatherWithUnitData
+    ): HourlyWeatherWithUnitData
 
     companion object {
         private const val BASE_URL = "https://api.open-meteo.com/v1/"
@@ -41,4 +41,12 @@ interface WeatherService {
                 .create(WeatherService::class.java)
         }
     }
+
+    @GET("forecast")
+    suspend fun fetchDailyWindDataBasedOnLocation(
+        @Query("latitude") latitude: Double,
+        @Query("longitude") longitude: Double,
+        @Query("timezone") timezone: String,
+        @Query("daily") hourly:String = "temperature_2m_min,temperature_2m_max,wind_speed_10m_max,wind_gusts_10m_max,rain_sum",
+    ): HourlyWeatherWithUnitData
 }
