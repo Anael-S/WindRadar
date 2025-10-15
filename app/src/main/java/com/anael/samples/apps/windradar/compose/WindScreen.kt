@@ -330,7 +330,7 @@ fun SuggestionAddressTextField(
         )
 
         SuggestionsDropdown(
-            suggestions = citySuggestions,
+            suggestions = citySuggestions?: emptyList(),
             expanded = expanded,
             onSelect = { suggestion ->
                 viewModel.onQueryChanged(suggestion.name)
@@ -377,17 +377,18 @@ fun AddressInputField(
 
 @Composable
 fun SuggestionsDropdown(
-    suggestions: List<GeoResultData>,
+    suggestions: List<GeoResultData>?,
     expanded: Boolean,
     onSelect: (GeoResultData) -> Unit,
 ) {
+    val list = suggestions ?: emptyList()
     DropdownMenu(
-        expanded = expanded && suggestions.isNotEmpty(),
+        expanded = expanded && list.isNotEmpty(),
         onDismissRequest = {},
         modifier = Modifier.fillMaxWidth(),
         properties = PopupProperties(focusable = false)
     ) {
-        suggestions.forEach { suggestion ->
+        list.forEach { suggestion ->
             val displayText = listOfNotNull(
                 suggestion.name,
                 suggestion.admin1,
