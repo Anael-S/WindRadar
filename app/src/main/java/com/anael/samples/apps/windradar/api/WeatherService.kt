@@ -1,5 +1,6 @@
 package com.anael.samples.apps.windradar.api
 
+import com.anael.samples.apps.windradar.data.DailyWeatherWithUnitData
 import com.anael.samples.apps.windradar.data.HourlyWeatherWithUnitData
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -48,5 +49,5 @@ interface WeatherService {
         @Query("longitude") longitude: Double,
         @Query("timezone") timezone: String,
         @Query("daily") hourly:String = "temperature_2m_min,temperature_2m_max,wind_speed_10m_max,wind_gusts_10m_max,rain_sum",
-    ): HourlyWeatherWithUnitData
+    ): DailyWeatherWithUnitData
 }
