@@ -36,6 +36,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,7 +47,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -55,90 +55,114 @@ import com.anael.samples.apps.windradar.data.UiState
 import com.anael.samples.apps.windradar.data.WeatherWithUnitData
 import com.anael.samples.apps.windradar.viewmodels.CitySuggestionViewModel
 import com.anael.samples.apps.windradar.viewmodels.WindViewModel
-import com.google.samples.apps.sunflower.R
 
 @Composable
 fun WindScreen(viewModel: WindViewModel = hiltViewModel()) {
     val weatherState by viewModel.weatherState.collectAsState()
 
-    when (weatherState) {
-        is UiState.Loading -> {
-            // Show spinner
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-        }
-        is UiState.Success -> {
-            WindScreen(
-                weatherData = (weatherState as UiState.Success).data,
-                onPullToRefresh = viewModel::refreshData
-            )
-        }
-        is UiState.Error -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Error: ${(weatherState as UiState.Error).message}")
-            }
-        }
-    }
+    WindScreen(
+        onPullToRefresh = viewModel::refreshData,
+        weatherState = weatherState
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun WindScreen(
-    weatherData: WeatherWithUnitData,
-    onPullToRefresh: () -> Unit
+    onPullToRefresh: () -> Unit,
+    weatherState: UiState<WeatherWithUnitData>
 ) {
+    // Pull-to-refresh gesture state
     val pullToRefreshState = rememberPullToRefreshState()
 
-    Scaffold { padding ->
-        if (pullToRefreshState.isRefreshing) {
+    // Track whether we are refreshing
+    var isRefreshing by remember { mutableStateOf(false) }
+
+    // Start refresh when user pulls
+    LaunchedEffect(pullToRefreshState.isRefreshing) {
+        if (pullToRefreshState.isRefreshing && !isRefreshing) {
+            isRefreshing = true
             onPullToRefresh()
         }
+    }
+
+    // Stop refresh when API call finishes
+    LaunchedEffect(weatherState) {
+        if (isRefreshing && weatherState !is UiState.Loading) {
+            isRefreshing = false
+            pullToRefreshState.endRefresh()
+        }
+    }
+
+    Scaffold { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            // Text field stays at the top
             SuggestionAddressTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp)
             )
 
-            // Pull-to-refresh + grid takes the remaining space
             Box(
                 modifier = Modifier
-                    .weight(1f) // <--- this makes it take remaining space
+                    .weight(1f)
                     .nestedScroll(pullToRefreshState.nestedScrollConnection)
             ) {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(all = 8.dp)
-                ) {
-                    items(weatherData.hourlyWeatherData.time.size) { index ->
-                        val data = weatherData.hourlyWeatherData
-                        WindItem(
-                            time = data.time[index],
-                            speed = data.windSpeeds[index],
-                            gust = data.windGusts[index],
-                            temp = data.temperature[index],
-                            windDirection = data.windDirection[index],
-                            cloudCover = data.cloudCover[index],
-                            weatherUnit = weatherData.hourlyUnits
-                        )
+                when (weatherState) {
+                    is UiState.Loading -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+
+                    is UiState.Success -> {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            contentPadding = PaddingValues(all = 8.dp)
+                        ) {
+                            val data = weatherState.data.hourlyWeatherData
+                            items(data.time.size) { index ->
+                                WindItem(
+                                    time = data.time[index],
+                                    speed = data.windSpeeds[index],
+                                    gust = data.windGusts[index],
+                                    temp = data.temperature[index],
+                                    windDirection = data.windDirection[index],
+                                    cloudCover = data.cloudCover[index],
+                                    weatherUnit = weatherState.data.hourlyUnits
+                                )
+                            }
+                        }
+                    }
+
+                    is UiState.Error -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("Error: ${(weatherState as UiState.Error).message}")
+                        }
                     }
                 }
 
-                PullToRefreshContainer(
-                    modifier = Modifier.align(Alignment.TopCenter),
-                    state = pullToRefreshState
-                )
+                // Only show indicator if refreshing or pulled down
+                if (pullToRefreshState.isRefreshing || pullToRefreshState.verticalOffset > 0f) {
+                    PullToRefreshContainer(
+                        state = pullToRefreshState,
+                        modifier = Modifier.align(Alignment.TopCenter)
+                    )
+                }
             }
         }
     }
-
 }
+
 
 @Composable
 fun WindItem(
