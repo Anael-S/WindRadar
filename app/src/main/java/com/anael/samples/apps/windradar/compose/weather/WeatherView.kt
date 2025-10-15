@@ -81,7 +81,7 @@ fun WeatherContent(
                             is ForecastResult.Hourly -> {
                                 val data = response.data.hourlyWeatherData
                                 items(data.time.size) { index ->
-                                    HourlyWindItem(
+                                    HourlyWeatherInfoItem(
                                         time = data.time[index],
                                         speed = data.windSpeeds[index],
                                         gust = data.windGusts[index],
@@ -93,18 +93,17 @@ fun WeatherContent(
                                 }
                             }
                             is ForecastResult.Daily  -> {
-                                val data = response.data.dailyWeatherData
-                                items(data.time.size) { index ->
-                                    //TODO dailyWindItem!
-//                                    DailyWindItem(
-//                                        time = data.time[index],
-//                                        speed = data.windSpeeds[index],
-//                                        gust = data.windGusts[index],
-//                                        temp = data.temperature[index],
-//                                        windDirection = data.windDirection[index],
-//                                        cloudCover = data.cloudCover[index],
-//                                        weatherUnit = response.data.dailyUnits
-//                                    )
+                                val dailyData = response.data.dailyWeatherData
+                                items(dailyData.time.size) { index ->
+                                    DailyWeatherInfoItem(
+                                        date = dailyData.time[index],
+                                        tempMin = dailyData.temperatureMin[index],
+                                        tempMax = dailyData.temperatureMax[index],
+                                        windSpeedMax = dailyData.windSpeeds[index],
+                                        windGustMax = dailyData.windGusts[index],
+                                        rainSum = dailyData.rainSum[index],
+                                        units = response.data.dailyUnits
+                                    )
                                 }
                             }
                         }

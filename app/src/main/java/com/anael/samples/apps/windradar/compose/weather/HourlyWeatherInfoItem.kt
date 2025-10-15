@@ -1,8 +1,6 @@
 package com.anael.samples.apps.windradar.compose.weather
 
 import AutoResizeText
-import android.R.attr.fontWeight
-import android.R.style
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,12 +30,11 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.anael.samples.apps.windradar.data.HourlyUnitsData
 
 
 @Composable
-fun HourlyWindItem(
+fun HourlyWeatherInfoItem(
     time: String,
     speed: Double,
     gust: Double,
