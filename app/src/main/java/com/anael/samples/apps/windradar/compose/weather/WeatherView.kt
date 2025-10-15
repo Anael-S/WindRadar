@@ -22,13 +22,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.anael.samples.apps.windradar.data.UiState
-import com.anael.samples.apps.windradar.data.HourlyWeatherWithUnitData
+import com.anael.samples.apps.windradar.viewmodels.ForecastResult
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherContent(
-    weatherState: UiState<HourlyWeatherWithUnitData>,
+    weatherState: UiState<ForecastResult>,
     onPullToRefresh: () -> Unit
 ) {
     // Pull-to-refresh gesture state
@@ -77,18 +77,38 @@ fun WeatherContent(
                         columns = GridCells.Fixed(2),
                         contentPadding = PaddingValues(all = 8.dp)
                     ) {
-                        val data = weatherState.data.hourlyWeatherData
-                        items(data.time.size) { index ->
-                            WindItem(
-                                time = data.time[index],
-                                speed = data.windSpeeds[index],
-                                gust = data.windGusts[index],
-                                temp = data.temperature[index],
-                                windDirection = data.windDirection[index],
-                                cloudCover = data.cloudCover[index],
-                                weatherUnit = weatherState.data.hourlyUnits
-                            )
+                        when (val response = weatherState.data) {
+                            is ForecastResult.Hourly -> {
+                                val data = response.data.hourlyWeatherData
+                                items(data.time.size) { index ->
+                                    HourlyWindItem(
+                                        time = data.time[index],
+                                        speed = data.windSpeeds[index],
+                                        gust = data.windGusts[index],
+                                        temp = data.temperature[index],
+                                        windDirection = data.windDirection[index],
+                                        cloudCover = data.cloudCover[index],
+                                        weatherUnit = response.data.hourlyUnits
+                                    )
+                                }
+                            }
+                            is ForecastResult.Daily  -> {
+                                val data = response.data.dailyWeatherData
+                                items(data.time.size) { index ->
+                                    //TODO dailyWindItem!
+//                                    DailyWindItem(
+//                                        time = data.time[index],
+//                                        speed = data.windSpeeds[index],
+//                                        gust = data.windGusts[index],
+//                                        temp = data.temperature[index],
+//                                        windDirection = data.windDirection[index],
+//                                        cloudCover = data.cloudCover[index],
+//                                        weatherUnit = response.data.dailyUnits
+//                                    )
+                                }
+                            }
                         }
+
                     }
                 }
 

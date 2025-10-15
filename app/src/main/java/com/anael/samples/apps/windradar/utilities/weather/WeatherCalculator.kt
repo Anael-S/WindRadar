@@ -2,7 +2,7 @@ package com.anael.samples.apps.windradar.utilities.weather
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.anael.samples.apps.windradar.data.WeatherData
+import com.anael.samples.apps.windradar.data.HourlyWeatherData
 import org.json.JSONObject
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -38,15 +38,15 @@ object WeatherCalculator {
 
     fun calculateIfAlertIsNecessary(
         context: Context,
-        weatherData: WeatherData,
+        hourlyWeatherData: HourlyWeatherData,
         windThreshold: Int = 40,
         gustThreshold: Int = 40,
         maxDayForward: Int = 1
     ): AlertResult {
         ensureInitialized(context)
-        val timestamps = weatherData.time
-        val windSpeeds = weatherData.windSpeeds
-        val gustSpeeds = weatherData.windGusts
+        val timestamps = hourlyWeatherData.time
+        val windSpeeds = hourlyWeatherData.windSpeeds
+        val gustSpeeds = hourlyWeatherData.windGusts
 
         val alertedDays = getAlertedDays(context)
 

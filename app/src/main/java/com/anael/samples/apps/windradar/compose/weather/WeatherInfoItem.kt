@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.anael.samples.apps.windradar.data.HourlyUnitsData
 
 @Composable
-fun WindItem(
+fun HourlyWindItem(
     time: String,
     speed: Double,
     gust: Double,

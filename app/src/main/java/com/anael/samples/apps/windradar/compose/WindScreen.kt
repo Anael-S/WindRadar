@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anael.samples.apps.windradar.compose.settings.SuggestionAddressTextField
+import com.anael.samples.apps.windradar.compose.weather.ForecastModeToggle
 import com.anael.samples.apps.windradar.compose.weather.WeatherContent
 import com.anael.samples.apps.windradar.viewmodels.CitySuggestionViewModel
 import com.anael.samples.apps.windradar.viewmodels.SelectedCityViewModel
@@ -27,6 +28,7 @@ fun WindScreen(
 ) {
     val weatherState by viewModel.weatherState.collectAsState()
     val savedCity by selectedCityVm.city.collectAsStateWithLifecycle()
+    val mode by viewModel.mode.collectAsStateWithLifecycle()
 
     Scaffold { padding ->
         Column(
@@ -47,6 +49,14 @@ fun WindScreen(
                     .padding(horizontal = 8.dp),
                 viewModel = citySuggestionViewModel,
                 onPersistSelected = { selectedCityVm.onCityChosen(it.toCitySelection()) }
+            )
+
+            ForecastModeToggle(
+                selected = mode,
+                onSelected = viewModel::setMode,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp, vertical = 4.dp)
             )
 
             WeatherContent(

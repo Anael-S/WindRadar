@@ -23,6 +23,14 @@ interface WeatherService {
         @Query("hourly") hourly:String = "wind_speed_10m,wind_gusts_10m,wind_direction_10m,cloud_cover,temperature_2m",
     ): HourlyWeatherWithUnitData
 
+    @GET("forecast")
+    suspend fun fetchDailyWindDataBasedOnLocation(
+        @Query("latitude") latitude: Double,
+        @Query("longitude") longitude: Double,
+        @Query("timezone") timezone: String,
+        @Query("daily") hourly:String = "temperature_2m_min,temperature_2m_max,wind_speed_10m_max,wind_gusts_10m_max,rain_sum",
+    ): DailyWeatherWithUnitData
+
     companion object {
         private const val BASE_URL = "https://api.open-meteo.com/v1/"
 
@@ -42,12 +50,4 @@ interface WeatherService {
                 .create(WeatherService::class.java)
         }
     }
-
-    @GET("forecast")
-    suspend fun fetchDailyWindDataBasedOnLocation(
-        @Query("latitude") latitude: Double,
-        @Query("longitude") longitude: Double,
-        @Query("timezone") timezone: String,
-        @Query("daily") hourly:String = "temperature_2m_min,temperature_2m_max,wind_speed_10m_max,wind_gusts_10m_max,rain_sum",
-    ): DailyWeatherWithUnitData
 }

@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Data class that represents the weather data from a weather search API
  */
-data class WeatherData(
+data class HourlyWeatherData(
     @field:SerializedName("wind_speed_10m") val windSpeeds: List<Double>,
     @field:SerializedName("wind_gusts_10m") val windGusts: List<Double>,
     @field:SerializedName("temperature_2m") val temperature: List<Double>,
