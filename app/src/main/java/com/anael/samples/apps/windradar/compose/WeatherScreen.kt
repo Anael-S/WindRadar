@@ -7,14 +7,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.anael.samples.apps.windradar.compose.settings.SuggestionAddressTextField
-import com.anael.samples.apps.windradar.compose.weather.ForecastModeToggle
 import com.anael.samples.apps.windradar.compose.weather.WeatherContent
 import com.anael.samples.apps.windradar.viewmodels.CitySuggestionViewModel
 import com.anael.samples.apps.windradar.viewmodels.SelectedCityViewModel
@@ -27,9 +25,8 @@ fun WeatherScreen(
     selectedCityVm: SelectedCityViewModel = hiltViewModel(),
 ) {
     val savedCity by selectedCityVm.city.collectAsStateWithLifecycle()
-    val mode by viewModel.mode.collectAsStateWithLifecycle()
-    val dailyState by viewModel.dailyUi.collectAsState()
-    val hourlyState by viewModel.hourlyUi.collectAsState()
+    val dailyState by viewModel.dailyUi.collectAsStateWithLifecycle()
+    val hourlyState by viewModel.hourlyUi.collectAsStateWithLifecycle()
 
     Scaffold { padding ->
         Column(
@@ -52,16 +49,7 @@ fun WeatherScreen(
                 onPersistSelected = { selectedCityVm.onCityChosen(it.toCitySelection()) }
             )
 
-            ForecastModeToggle(
-                selected = mode,
-                onSelected = viewModel::setMode,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-            )
-
             WeatherContent(
-                mode = mode,
                 dailyState = dailyState,
                 hourlyState = hourlyState,
                 onPullToRefresh = { viewModel.refreshData() }

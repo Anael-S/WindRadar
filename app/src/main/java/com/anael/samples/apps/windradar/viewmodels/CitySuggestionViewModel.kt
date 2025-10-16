@@ -1,6 +1,5 @@
 package com.anael.samples.apps.windradar.viewmodels
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anael.samples.apps.windradar.data.CitySuggestionRepository
@@ -19,7 +18,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CitySuggestionViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
     private val repository: CitySuggestionRepository
 ) : ViewModel() {
 
