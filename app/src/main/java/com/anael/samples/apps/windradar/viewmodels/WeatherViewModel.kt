@@ -2,6 +2,7 @@ package com.anael.samples.apps.windradar.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.anael.samples.apps.windradar.R
 import com.anael.samples.apps.windradar.compose.weather.WeatherUiMapper
 import com.anael.samples.apps.windradar.compose.weather.model.DailyUiItem
 import com.anael.samples.apps.windradar.compose.weather.model.HourlyUiItem
@@ -10,12 +11,22 @@ import com.anael.samples.apps.windradar.data.HourlyWeatherWithUnitData
 import com.anael.samples.apps.windradar.data.UiState
 import com.anael.samples.apps.windradar.data.WindRepository
 import com.anael.samples.apps.windradar.data.model.CitySelection
+import com.anael.samples.apps.windradar.di.StringProvider
 import com.anael.samples.apps.windradar.domain.FilterUpcomingHourly
 import com.anael.samples.apps.windradar.utilities.ListUtils.sliceBy
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import java.time.ZoneId
+import javax.inject.Inject
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
@@ -23,11 +34,12 @@ class WeatherViewModel @Inject constructor(
     cityRepo: CitySelectionRepository,
     private val filterUpcomingHourly: FilterUpcomingHourly,
     private val uiMapper: WeatherUiMapper,
+    private val strings: StringProvider,
 ) : ViewModel() {
 
     private val refresh = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 
-    /** DAILY UI stream — always loads (no mode). */
+    /** DAILY UI stream */
     val dailyUi: StateFlow<UiState<List<DailyUiItem>>> =
         combine(
             refresh.onStart { emit(Unit) },                 // trigger on start + manual refresh
@@ -35,7 +47,7 @@ class WeatherViewModel @Inject constructor(
         ) { _, city -> city }
             .flatMapLatest { city ->
                 if (city == null) {
-                    flowOf(UiState.Error("No city selected"))
+                    flowOf(UiState.Error(strings.get(R.string.error_no_city_selected)))
                 } else {
                     val zoneId = city.zoneOrSystem()
                     repository.getDailyWindDataPrevision(
@@ -45,7 +57,7 @@ class WeatherViewModel @Inject constructor(
                     )
                         .map { daily -> UiState.Success(uiMapper.mapDaily(daily)) }
                         .onStart<UiState<List<DailyUiItem>>> { emit(UiState.Loading) }
-                        .catch { emit(UiState.Error(it.message ?: "Unknown error")) }
+                        .catch { emit(UiState.Error(it.message ?: strings.get(R.string.unknown_error))) }
                 }
             }
             .stateIn(
@@ -62,7 +74,7 @@ class WeatherViewModel @Inject constructor(
         ) { _, city -> city }
             .flatMapLatest { city ->
                 if (city == null) {
-                    flowOf(UiState.Error("No city selected"))
+                    flowOf(UiState.Error(strings.get(R.string.error_no_city_selected)))
                 } else {
                     val zoneId = city.zoneOrSystem()
                     repository.getHourlyWindDataPrevision(
@@ -73,7 +85,7 @@ class WeatherViewModel @Inject constructor(
                         .map { raw -> raw.filterFromCurrentHour(zoneId) }
                         .map { filtered -> UiState.Success(uiMapper.mapHourly(filtered)) }
                         .onStart<UiState<List<HourlyUiItem>>> { emit(UiState.Loading) }
-                        .catch { emit(UiState.Error(it.message ?: "Unknown error")) }
+                        .catch { emit(UiState.Error(it.message ?: strings.get(R.string.unknown_error))) }
                 }
             }
             .stateIn(

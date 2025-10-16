@@ -25,9 +25,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.anael.samples.apps.windradar.R
 import com.anael.samples.apps.windradar.compose.weather.model.DailyUiItem
 import com.anael.samples.apps.windradar.compose.weather.model.HourlyUiItem
 import com.anael.samples.apps.windradar.data.UiState
@@ -67,7 +69,7 @@ fun WeatherContent(
             // ---- Daily section ----
             item {
                 Spacer(Modifier.height(12.dp))
-                SectionHeader(text = "Daily")
+                SectionHeader(text = stringResource(R.string.daily_section))
             }
             item {
                 RenderDailyRow(dailyState)
@@ -75,7 +77,7 @@ fun WeatherContent(
 
             // ---- Hourly section ----
             item {
-                SectionHeader(text = "Hourly")
+                SectionHeader(text = stringResource(R.string.hourly_section))
             }
             item {
                 RenderHourlyRow(hourlyState)

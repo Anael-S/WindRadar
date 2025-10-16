@@ -21,9 +21,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.anael.samples.apps.windradar.R
 import com.anael.samples.apps.windradar.compose.weather.TemperatureItemWithIcon
 import com.anael.samples.apps.windradar.compose.weather.WeatherStatItem
 import com.anael.samples.apps.windradar.compose.weather.model.DailyUiItem
@@ -86,21 +88,21 @@ fun DailyWeatherInfoItem(
                 ) {
                     WeatherStatItem(
                         icon = Icons.Filled.Air,
-                        label = "Wind",
+                        label = stringResource(R.string.wind_section),
                         value = item.windSpeedText,
                         unit = item.windUnit,
                         modifier = Modifier.weight(1f)
                     )
                     WeatherStatItem(
                         icon = Icons.Filled.Air,
-                        label = "Gusts",
+                        label = stringResource(R.string.gusts_section),
                         value = item.windGustText,
                         unit = item.windUnit,
                         modifier = Modifier.weight(1f)
                     )
                     WeatherStatItem(
                         icon = Icons.Filled.WaterDrop,
-                        label = "Rain",
+                        label = stringResource(R.string.rain_section),
                         value = item.rainText,
                         unit = item.rainUnit,
                         modifier = Modifier.weight(1f)

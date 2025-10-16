@@ -28,10 +28,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.anael.samples.apps.windradar.R
 import com.anael.samples.apps.windradar.compose.weather.model.HourlyUiItem
 
 @Composable
@@ -101,21 +103,21 @@ fun HourlyWeatherInfoItem(
                 ) {
                     WeatherStatItem(
                         icon = Icons.Filled.Air,
-                        label = "Wind",
+                        label = stringResource(R.string.wind_section),
                         value = item.windText,
                         unit = item.windUnit,
                         modifier = Modifier.weight(1f)
                     )
                     WeatherStatItem(
                         icon = Icons.Filled.Air,
-                        label = "Gusts",
+                        label = stringResource(R.string.gusts_section),
                         value = item.gustText,
                         unit = item.windUnit,
                         modifier = Modifier.weight(1f)
                     )
                     WeatherStatItem(
                         icon = Icons.Filled.Cloud,
-                        label = "Clouds",
+                        label = stringResource(R.string.cloud_section),
                         value = item.cloudsText,
                         unit = item.cloudUnit,
                         modifier = Modifier.weight(1f)

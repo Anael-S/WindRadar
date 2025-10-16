@@ -1,8 +1,14 @@
-
 <resources>
-
-    <!-- Resources that do not require translation -->
-    <string name="app_name" translatable="false">Sunflower</string>
-
+    <string name="app_name" translatable="false">WindRadar</string>
+    <string name="error_no_city_selected" >Select a city first</string>
+    <string name="unknown_error" >Unknown error</string>
+    <string name="label_city">City</string>
+    <string name="hint_city">Search a city…</string>
+    <string name="daily_section">Daily</string>
+    <string name="hourly_section">Hourly</string>
+    <string name="wind_section">Wind</string>
+    <string name="gusts_section">Gusts</string>
+    <string name="rain_section">Rain</string>
+    <string name="cloud_section">Clouds</string>
 
 </resources>

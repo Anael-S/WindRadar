@@ -17,9 +17,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
+import com.anael.samples.apps.windradar.R
 import com.anael.samples.apps.windradar.data.GeoResultData
 import com.anael.samples.apps.windradar.viewmodels.CitySuggestionViewModel
 
@@ -67,6 +69,7 @@ fun SuggestionAddressTextField(
 fun AddressInputField(
     text: String,
     onTextChange: (String) -> Unit,
+    @androidx.annotation.StringRes labelRes: Int = R.string.label_city,
 ) {
     // keep a local TextFieldValue to preserve composition/selection
     var localValue by rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -87,7 +90,8 @@ fun AddressInputField(
             localValue = newValue
             onTextChange(newValue.text) // push String to ViewModel
         },
-        label = { Text("City") },
+        label = { Text(stringResource(labelRes)) },
+        placeholder = { Text(stringResource(R.string.hint_city)) },
         modifier = Modifier
             .fillMaxWidth()
             .onFocusChanged { /* no extra re-requesting */ },
