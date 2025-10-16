@@ -50,7 +50,6 @@ fun AlertSummary(
                 AlertCard(
                     alert = alert,
                     onToggle = { id, enabled -> alertsViewModel.toggle(id, enabled) },
-                    onEdit = { /* TODO: navigate to edit if you have it */ },
                     onDelete = { pendingDelete = alert } // open confirm dialog
                 )
             }
@@ -90,7 +89,6 @@ private fun ConfirmDeleteDialog(
 private fun AlertCard(
     alert: Alert,
     onToggle: (String, Boolean) -> Unit,
-    onEdit: (String) -> Unit,
     onDelete: (String) -> Unit
 ) {
     Card {
@@ -109,15 +107,13 @@ private fun AlertCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp), horizontalAlignment = Alignment.End) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+                horizontalAlignment = Alignment.End
+            ) {
                 Switch(checked = alert.enabled, onCheckedChange = { onToggle(alert.id, it) })
-                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    IconButton(onClick = { onEdit(alert.id) }) {
-                        Icon(Icons.Rounded.Edit, contentDescription = stringResource(R.string.edit))
-                    }
-                    IconButton(onClick = { onDelete(alert.id) }) {
-                        Icon(Icons.Rounded.Delete, contentDescription = stringResource(R.string.delete))
-                    }
+                IconButton(onClick = { onDelete(alert.id) }) {
+                    Icon(Icons.Rounded.Delete, contentDescription = stringResource(R.string.delete))
                 }
             }
         }
