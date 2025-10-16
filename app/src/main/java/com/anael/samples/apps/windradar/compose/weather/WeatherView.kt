@@ -21,6 +21,7 @@ import com.anael.samples.apps.windradar.data.UiState
 import com.anael.samples.apps.windradar.ui.weather.DailyWeatherInfoItem
 import com.anael.samples.apps.windradar.viewmodels.ForecastMode
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherContent(
@@ -29,41 +30,38 @@ fun WeatherContent(
     hourlyState: UiState<List<HourlyUiItem>>,
     onPullToRefresh: () -> Unit,
 ) {
-    val pullToRefreshState = rememberPullToRefreshState()
-    var isRefreshing by remember { mutableStateOf(false) }
+    val ptr = rememberPullToRefreshState()
 
-    // Start refresh when user pulls
-    LaunchedEffect(pullToRefreshState.isRefreshing) {
-        if (pullToRefreshState.isRefreshing && !isRefreshing) {
-            isRefreshing = true
-            onPullToRefresh()
-        }
+    // When user pulls and state flips to refreshing, kick off the refresh
+    LaunchedEffect(ptr.isRefreshing) {
+        if (ptr.isRefreshing) onPullToRefresh()
     }
-    // Stop refresh when either stream finishes loading
-    LaunchedEffect(mode, dailyState, hourlyState) {
+
+    // End refresh when the CURRENT mode's stream leaves Loading (either Success or Error)
+    LaunchedEffect(mode, dailyState, hourlyState, ptr.isRefreshing) {
+        if (!ptr.isRefreshing) return@LaunchedEffect
         val done = when (mode) {
-            ForecastMode.Daily -> dailyState !is UiState.Loading
+            ForecastMode.Daily  -> dailyState !is UiState.Loading
             ForecastMode.Hourly -> hourlyState !is UiState.Loading
         }
-        if (isRefreshing && done) {
-            isRefreshing = false
-            pullToRefreshState.endRefresh()
-        }
+        if (done) ptr.endRefresh()
     }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .nestedScroll(pullToRefreshState.nestedScrollConnection)
+            // IMPORTANT: keep nestedScroll on a wrapper that exists in *all* states
+            .nestedScroll(ptr.nestedScrollConnection)
     ) {
         when (mode) {
-            ForecastMode.Daily -> RenderDaily(dailyState)
+            ForecastMode.Daily  -> RenderDaily(dailyState)
             ForecastMode.Hourly -> RenderHourly(hourlyState)
         }
 
-        if (pullToRefreshState.isRefreshing || pullToRefreshState.verticalOffset > 0f) {
+        // Show indicator while refreshing or being pulled
+        if (ptr.isRefreshing || ptr.verticalOffset > 0f) {
             PullToRefreshContainer(
-                state = pullToRefreshState,
+                state = ptr,
                 modifier = Modifier.align(Alignment.TopCenter)
             )
         }
@@ -74,7 +72,7 @@ fun WeatherContent(
 private fun RenderDaily(state: UiState<List<DailyUiItem>>) {
     when (state) {
         is UiState.Loading -> CenterLoader()
-        is UiState.Error -> CenterError(state.message)
+        is UiState.Error   -> CenterError(state.message)
         is UiState.Success -> {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
@@ -92,7 +90,7 @@ private fun RenderDaily(state: UiState<List<DailyUiItem>>) {
 private fun RenderHourly(state: UiState<List<HourlyUiItem>>) {
     when (state) {
         is UiState.Loading -> CenterLoader()
-        is UiState.Error -> CenterError(state.message)
+        is UiState.Error   -> CenterError(state.message)
         is UiState.Success -> {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),

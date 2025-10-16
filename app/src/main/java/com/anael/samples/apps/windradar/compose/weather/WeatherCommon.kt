@@ -16,10 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 import kotlin.math.PI
 import kotlin.math.pow
 import kotlin.math.sin
@@ -72,39 +68,6 @@ fun rememberSkyGradient(daylight: Float): Brush {
     val top = lerpColor(duskTop, dayTop, t)
     val bottom = lerpColor(duskBottom, dayBottom, t)
     return Brush.verticalGradient(listOf(top, bottom))
-}
-
-fun computeDaylightFactor(raw: String): Float {
-    // 1) Try full datetime formats
-    val dtFormats = listOf(
-        "yyyy-MM-dd'T'HH:mm",
-        "dd/MM/yyyy HH:mm"
-    ).map { DateTimeFormatter.ofPattern(it, Locale.getDefault()) }
-
-    for (fmt in dtFormats) {
-        try {
-            val ldt = LocalDateTime.parse(raw, fmt)
-            return hourToDaylight(ldt.hour, ldt.minute)
-        } catch (_: Exception) {}
-    }
-
-    // 2) Try time-only directly (e.g., "06:00")
-    try {
-        val lt = LocalTime.parse(raw, DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault()))
-        return hourToDaylight(lt.hour, lt.minute)
-    } catch (_: Exception) {}
-
-    // 3) Extract time from any string (e.g., "Wednesday 06:00")
-    val timeMatch = Regex("""\b(\d{1,2}):(\d{2})\b""").find(raw)
-    if (timeMatch != null) {
-        val (hStr, mStr) = timeMatch.destructured
-        val h = hStr.toInt().coerceIn(0, 23)
-        val m = mStr.toInt().coerceIn(0, 59)
-        return hourToDaylight(h, m)
-    }
-
-    // 4) Last resort: assume noon
-    return 1f
 }
 
 /**
