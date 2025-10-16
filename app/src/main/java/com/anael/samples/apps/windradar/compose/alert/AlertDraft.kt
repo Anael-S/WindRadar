@@ -5,8 +5,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.anael.samples.apps.windradar.R
 
 data class AlertDraft(
     val name: String,
@@ -25,13 +27,13 @@ fun AlertQuickForm(
     onSave: (AlertDraft) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
-    var wind by remember { mutableStateOf(15f) }
-    var gust by remember { mutableStateOf(25f) }
+    var wind by remember { mutableFloatStateOf(15f) }
+    var gust by remember { mutableFloatStateOf(25f) }
     var dirEnabled by remember { mutableStateOf(false) }
-    var dirStart by remember { mutableStateOf(0f) }
-    var dirEnd by remember { mutableStateOf(360f) }
-    var startHour by remember { mutableStateOf(6f) }
-    var endHour by remember { mutableStateOf(18f) }
+    var dirStart by remember { mutableFloatStateOf(0f) }
+    var dirEnd by remember { mutableFloatStateOf(360f) }
+    var startHour by remember { mutableFloatStateOf(6f) }
+    var endHour by remember { mutableFloatStateOf(18f) }
 
     Column(
         modifier = Modifier
@@ -39,25 +41,25 @@ fun AlertQuickForm(
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text("Create alert", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
+        Text(stringResource(R.string.create_alert), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
 
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
-            label = { Text("Name (optional)") },
+            label = { Text(stringResource(R.string.optional_name)) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true
         )
 
         LabeledSlider(
-            label = "Wind ≥ ${"%.0f".format(wind)} km/h",
+            label = stringResource(R.string.label_wind_threshold, wind),
             value = wind,
             onValueChange = { wind = it },
             valueRange = 0f..60f
         )
 
         LabeledSlider(
-            label = "Gusts ≥ ${"%.0f".format(gust)} km/h",
+            label = stringResource(R.string.label_gusts_threshold, gust),
             value = gust,
             onValueChange = { gust = it },
             valueRange = 0f..100f
@@ -65,14 +67,14 @@ fun AlertQuickForm(
 
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Switch(checked = dirEnabled, onCheckedChange = { dirEnabled = it })
-            Text("Limit wind direction (°)")
+            Text(stringResource(R.string.limit_wind_direction))
         }
         if (dirEnabled) {
             RangeRow(
-                labelStart = "From",
+                labelStart = stringResource(R.string.from),
                 startValue = dirStart,
                 onStartChange = { dirStart = it },
-                labelEnd = "To",
+                labelEnd = stringResource(R.string.to),
                 endValue = dirEnd,
                 onEndChange = { dirEnd = it },
                 range = 0f..360f,
@@ -80,12 +82,12 @@ fun AlertQuickForm(
             )
         }
 
-        Text("Time window")
+        Text(stringResource(R.string.time_window))
         RangeRow(
-            labelStart = "Start",
+            labelStart = stringResource(R.string.start),
             startValue = startHour,
             onStartChange = { startHour = it },
-            labelEnd = "End",
+            labelEnd = stringResource(R.string.end),
             endValue = endHour,
             onEndChange = { endHour = it },
             range = 0f..24f,
@@ -94,7 +96,7 @@ fun AlertQuickForm(
         )
 
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-            TextButton(onClick = onCancel) { Text("Cancel") }
+            TextButton(onClick = onCancel) { Text(stringResource(R.string.cancel)) }
             Button(
                 onClick = {
                     onSave(
@@ -109,7 +111,7 @@ fun AlertQuickForm(
                         )
                     )
                 }
-            ) { Text("Save") }
+            ) { Text(stringResource(R.string.save)) }
         }
         Spacer(Modifier.height(8.dp))
     }

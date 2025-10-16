@@ -12,5 +12,17 @@
     <string name="cloud_section">Clouds</string>
     <string name="low">LOW</string>
     <string name="high">HIGH</string>
+    <string name="create_alert">Create alert</string>
+    <string name="optional_name">Name (optional)</string>
+    <string name="label_wind_threshold">Wind ≥ %1$.0f\u00A0km/h</string>
+    <string name="label_gusts_threshold">Gusts ≥ %1$.0f\u00A0km/h </string>
+    <string name="limit_wind_direction">Limit wind direction (°)</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="start">Start</string>
+    <string name="end">End</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="time_window">Time window</string>
 
 </resources>
