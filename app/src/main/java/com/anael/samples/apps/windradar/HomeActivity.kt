@@ -13,7 +13,6 @@ class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Displaying edge-to-edge
         enableEdgeToEdge()
         setContent {
             WindRadarTheme {

@@ -10,9 +10,11 @@ import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.anael.samples.apps.windradar.R
 import com.anael.samples.apps.windradar.compose.alert.AlertDraft
 import com.anael.samples.apps.windradar.compose.alert.AlertQuickForm
 import com.anael.samples.apps.windradar.compose.settings.SuggestionAddressTextField
@@ -27,7 +29,7 @@ fun WeatherScreen(
     viewModel: WeatherViewModel = hiltViewModel(),
     citySuggestionViewModel: CitySuggestionViewModel = hiltViewModel(),
     selectedCityVm: SelectedCityViewModel = hiltViewModel(),
-    onOpenAlerts: () -> Unit = {} // hook to navigate to AlertsRoute()
+    onOpenAlerts: () -> Unit = {}
 ) {
     val savedCity by selectedCityVm.city.collectAsStateWithLifecycle()
     val dailyState by viewModel.dailyUi.collectAsStateWithLifecycle()
@@ -46,7 +48,7 @@ fun WeatherScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "WindRadar") }, // move to stringResource if you have it
+                title = { Text(text = stringResource(R.string.app_name)) },
                 actions = {
                     IconButton(onClick = onOpenAlerts) {
                         Icon(Icons.Rounded.Notifications, contentDescription = "Manage alerts")

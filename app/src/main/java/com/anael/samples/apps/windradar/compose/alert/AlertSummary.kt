@@ -11,18 +11,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-
-data class AlertSummary(
-    val id: String,
-    val title: String,
-    val enabled: Boolean,
-    val summary: String,   // e.g., "Wind ≥ 25 km/h • 06:00–18:00 • Dir 180–240°"
-)
+import com.anael.samples.apps.windradar.compose.alert.model.Alert
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AlertsRoute(
-    alerts: List<AlertSummary>,
+fun AlertSummary(
+    alerts: List<Alert>,
     onToggle: (id: String, enabled: Boolean) -> Unit,
     onEdit: (id: String) -> Unit,
     onDelete: (id: String) -> Unit,
@@ -54,7 +48,7 @@ fun AlertsRoute(
 
 @Composable
 private fun AlertCard(
-    a: AlertSummary,
+    a: Alert,
     onToggle: (String, Boolean) -> Unit,
     onEdit: (String) -> Unit,
     onDelete: (String) -> Unit
