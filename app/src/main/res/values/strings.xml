@@ -30,5 +30,6 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="confirm_delete_alert">Delete this alert?</string>
+    <string name="back">Back</string>
 
 </resources>

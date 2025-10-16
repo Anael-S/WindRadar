@@ -21,7 +21,7 @@ fun AppNavHost(navController: NavHostController) {
         }
 
         composable("alerts") {
-            AlertSummary()
+            AlertSummary(navController = navController)
         }
     }
 }

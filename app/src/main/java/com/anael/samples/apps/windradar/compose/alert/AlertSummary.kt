@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.rounded.AddAlert
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.*
@@ -21,6 +22,7 @@ import com.anael.samples.apps.windradar.viewmodels.AlertsViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlertSummary(
+    navController: androidx.navigation.NavController,
     alertsViewModel: AlertsViewModel = hiltViewModel(),
 ) {
     val alerts by alertsViewModel.alertsUi.collectAsStateWithLifecycle()
@@ -30,7 +32,19 @@ fun AlertSummary(
     var editingDraft by remember { mutableStateOf<AlertDraft?>(null) }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text(stringResource(R.string.alerts)) }) },
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.alerts)) },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.back)
+                        )
+                    }
+                }
+            )
+        },
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = {
