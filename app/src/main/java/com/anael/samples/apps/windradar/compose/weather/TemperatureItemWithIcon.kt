@@ -13,8 +13,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.anael.samples.apps.windradar.R
 
 /**
  * Displays low & high temperature labels with a weather emoji in between,
@@ -53,12 +55,12 @@ fun TemperatureItemWithIcon(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "LOW",
+                text = stringResource(R.string.low),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
-                text = "HIGH",
+                text = stringResource(R.string.high),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

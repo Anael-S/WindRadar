@@ -10,5 +10,7 @@
     <string name="gusts_section">Gusts</string>
     <string name="rain_section">Rain</string>
     <string name="cloud_section">Clouds</string>
+    <string name="low">LOW</string>
+    <string name="high">HIGH</string>
 
 </resources>

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -126,10 +125,18 @@ private fun lerpColor(start: Color, end: Color, t: Float): Color =
         alpha = start.alpha + (end.alpha - start.alpha) * t
     )
 
-fun valueWithUnit(value: Double, decimals: Int = 1): String {
+fun valueWithoutUnit(value: Double, decimals: Int = 1): String {
     val fmt = "%.${decimals}f"
     return String.format(fmt, value)
 }
 
-fun valueWithUnit(value: Int): String =
+fun valueWithoutUnit(value: Int): String =
     "$value"
+
+fun valueWithUnit(value: Double, unit: String, decimals: Int = 1): String {
+    val fmt = "%.${decimals}f"
+    return String.format(fmt, value) + "\u00A0" + unit
+}
+
+fun valueWithUnit(value: Int, unit: String): String =
+    "$value\u00A0$unit"

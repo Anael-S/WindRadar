@@ -23,13 +23,13 @@ class WeatherUiMapper @Inject constructor() {
 
             DailyUiItem(
                 time = DateUtils.formatToDayWithOrdinalAndMonth(d.time[i]),
-                tempMinText = valueWithUnit(d.temperatureMin[i], 0),
+                tempMinText = valueWithUnit(d.temperatureMin[i], u.temperatureUnit, 0),
                 tempUnit = u.temperatureUnit,
-                tempMaxText = valueWithUnit(d.temperatureMax[i], 0),
-                windSpeedText = valueWithUnit(d.windSpeeds[i], 1),
-                windGustText = valueWithUnit(d.windGusts[i], 1),
+                tempMaxText = valueWithUnit(d.temperatureMax[i], u.temperatureUnit, 0),
+                windSpeedText = valueWithoutUnit(d.windSpeeds[i], 1),
+                windGustText = valueWithoutUnit(d.windGusts[i], 1),
                 windUnit = u.windSpeedsUnit,
-                rainText = valueWithUnit(d.rainSum[i], 1),
+                rainText = valueWithoutUnit(d.rainSum[i], 1),
                 rainUnit = u.rainSumUnit,
                 brightnessFactor = brightness,
                 emoji = pickEmojiForBrightness(brightness)
@@ -59,11 +59,11 @@ class WeatherUiMapper @Inject constructor() {
 
             HourlyUiItem(
                 time = timeText,
-                tempText = valueWithUnit(h.temperature[i], 1),
+                tempText = valueWithUnit(h.temperature[i], u.temperatureUnit, 1),
                 tempUnit = u.temperatureUnit,
-                windText = valueWithUnit(h.windSpeeds[i], 1),
-                gustText = valueWithUnit(h.windGusts[i], 1),
-                cloudsText = valueWithUnit(h.cloudCover[i]),
+                windText = valueWithoutUnit(h.windSpeeds[i], 1),
+                gustText = valueWithoutUnit(h.windGusts[i], 1),
+                cloudsText = valueWithoutUnit(h.cloudCover[i]),
                 cloudUnit = u.cloudCoverUnits,
                 windUnit = u.windSpeedsUnit,
                 windDirectionDeg = h.windDirection[i],
