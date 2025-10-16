@@ -82,7 +82,7 @@ private val DarkColors = darkColorScheme(
 )
 
 @Composable
-fun SunflowerTheme(
+fun WindRadarTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,

@@ -4,8 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.anael.samples.apps.windradar.compose.WeatherScreen
-import com.anael.samples.apps.windradar.ui.SunflowerTheme
+import com.anael.samples.apps.windradar.ui.WindRadarTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -17,8 +16,8 @@ class HomeActivity : ComponentActivity() {
         // Displaying edge-to-edge
         enableEdgeToEdge()
         setContent {
-            SunflowerTheme {
-                WeatherScreen()
+            WindRadarTheme {
+                WindRadarApp()
             }
         }
         
