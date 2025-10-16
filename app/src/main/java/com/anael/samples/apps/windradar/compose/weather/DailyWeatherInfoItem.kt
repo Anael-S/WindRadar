@@ -88,18 +88,21 @@ fun DailyWeatherInfoItem(
                         icon = Icons.Filled.Air,
                         label = "Wind",
                         value = item.windSpeedText,
+                        unit = item.windUnit,
                         modifier = Modifier.weight(1f)
                     )
                     WeatherStatItem(
                         icon = Icons.Filled.Air,
                         label = "Gusts",
                         value = item.windGustText,
+                        unit = item.windUnit,
                         modifier = Modifier.weight(1f)
                     )
                     WeatherStatItem(
                         icon = Icons.Filled.WaterDrop,
                         label = "Rain",
                         value = item.rainText,
+                        unit = item.rainUnit,
                         modifier = Modifier.weight(1f)
                     )
                 }

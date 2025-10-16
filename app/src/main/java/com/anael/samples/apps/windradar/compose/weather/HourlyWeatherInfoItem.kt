@@ -103,18 +103,21 @@ fun HourlyWeatherInfoItem(
                         icon = Icons.Filled.Air,
                         label = "Wind",
                         value = item.windText,
+                        unit = item.windUnit,
                         modifier = Modifier.weight(1f)
                     )
                     WeatherStatItem(
                         icon = Icons.Filled.Air,
                         label = "Gusts",
                         value = item.gustText,
+                        unit = item.windUnit,
                         modifier = Modifier.weight(1f)
                     )
                     WeatherStatItem(
                         icon = Icons.Filled.Cloud,
                         label = "Clouds",
                         value = item.cloudsText,
+                        unit = item.cloudUnit,
                         modifier = Modifier.weight(1f)
                     )
                 }

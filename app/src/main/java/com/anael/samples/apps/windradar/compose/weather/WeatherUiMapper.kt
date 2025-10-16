@@ -23,11 +23,14 @@ class WeatherUiMapper @Inject constructor() {
 
             DailyUiItem(
                 time = DateUtils.formatToDayWithOrdinalAndMonth(d.time[i]),
-                tempMinText = valueWithUnit(d.temperatureMin[i], u.temperatureUnit, 0),
-                tempMaxText = valueWithUnit(d.temperatureMax[i], u.temperatureUnit, 0),
-                windSpeedText = valueWithUnit(d.windSpeeds[i], u.windSpeedsUnit, 1),
-                windGustText  = valueWithUnit(d.windGusts[i],  u.windGustsUnit, 1),
-                rainText      = valueWithUnit(d.rainSum[i],    u.rainSumUnit, 1),
+                tempMinText = valueWithUnit(d.temperatureMin[i], 0),
+                tempUnit = u.temperatureUnit,
+                tempMaxText = valueWithUnit(d.temperatureMax[i], 0),
+                windSpeedText = valueWithUnit(d.windSpeeds[i], 1),
+                windGustText = valueWithUnit(d.windGusts[i], 1),
+                windUnit = u.windSpeedsUnit,
+                rainText = valueWithUnit(d.rainSum[i], 1),
+                rainUnit = u.rainSumUnit,
                 brightnessFactor = brightness,
                 emoji = pickEmojiForBrightness(brightness)
             )
@@ -56,10 +59,13 @@ class WeatherUiMapper @Inject constructor() {
 
             HourlyUiItem(
                 time = timeText,
-                tempText  = valueWithUnit(h.temperature[i], u.temperatureUnit, 1),
-                windText  = valueWithUnit(h.windSpeeds[i], u.windSpeedsUnit, 1),
-                gustText  = valueWithUnit(h.windGusts[i], u.windGustsUnit, 1),
-                cloudsText = valueWithUnit(h.cloudCover[i], u.cloudCoverUnits),
+                tempText = valueWithUnit(h.temperature[i], 1),
+                tempUnit = u.temperatureUnit,
+                windText = valueWithUnit(h.windSpeeds[i], 1),
+                gustText = valueWithUnit(h.windGusts[i], 1),
+                cloudsText = valueWithUnit(h.cloudCover[i]),
+                cloudUnit = u.cloudCoverUnits,
+                windUnit = u.windSpeedsUnit,
                 windDirectionDeg = h.windDirection[i],
                 brightnessFactor = brightness,
                 emoji = emoji
@@ -72,6 +78,6 @@ class WeatherUiMapper @Inject constructor() {
         brightness < 0.35f -> "🌥️"
         brightness < 0.55f -> "🌥"
         brightness < 0.75f -> "🌤️"
-        else      -> "🌞"
+        else -> "🌞"
     }
 }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +27,7 @@ fun WeatherStatItem(
     icon: ImageVector,
     label: String,
     value: String,
+    unit: String,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -50,6 +52,13 @@ fun WeatherStatItem(
         )
         AutoResizeText(
             text = value,
+            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+            maxLines = 1,
+            minFontSizeSp = 9f,
+            maxFontSizeSp = 14f,
+        )
+        AutoResizeText(
+            text = unit,
             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
             maxLines = 1,
             minFontSizeSp = 9f,
@@ -117,10 +126,10 @@ private fun lerpColor(start: Color, end: Color, t: Float): Color =
         alpha = start.alpha + (end.alpha - start.alpha) * t
     )
 
-fun valueWithUnit(value: Double, unit: String, decimals: Int = 1): String {
+fun valueWithUnit(value: Double, decimals: Int = 1): String {
     val fmt = "%.${decimals}f"
-    return String.format(fmt, value) + "\u00A0" + unit
+    return String.format(fmt, value)
 }
 
-fun valueWithUnit(value: Int, unit: String): String =
-    "$value\u00A0$unit"
+fun valueWithUnit(value: Int): String =
+    "$value"

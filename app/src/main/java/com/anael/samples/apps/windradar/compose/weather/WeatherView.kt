@@ -2,9 +2,11 @@ package com.anael.samples.apps.windradar.compose.weather
 
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -74,12 +76,18 @@ private fun RenderDaily(state: UiState<List<DailyUiItem>>) {
         is UiState.Loading -> CenterLoader()
         is UiState.Error   -> CenterError(state.message)
         is UiState.Success -> {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(8.dp)
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(state.data) { item ->
-                    DailyWeatherInfoItem(item = item)
+                    Box(
+                        modifier = Modifier
+                            .width(180.dp)
+                            .padding(vertical = 4.dp)
+                    ) {
+                        DailyWeatherInfoItem(item = item)
+                    }
                 }
             }
         }
@@ -92,12 +100,18 @@ private fun RenderHourly(state: UiState<List<HourlyUiItem>>) {
         is UiState.Loading -> CenterLoader()
         is UiState.Error   -> CenterError(state.message)
         is UiState.Success -> {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(8.dp)
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(state.data) { item ->
-                    HourlyWeatherInfoItem(item = item)
+                    Box(
+                        modifier = Modifier
+                            .width(180.dp)
+                            .padding(vertical = 4.dp)
+                    ) {
+                        HourlyWeatherInfoItem(item = item)
+                    }
                 }
             }
         }
