@@ -22,23 +22,14 @@ import androidx.compose.ui.unit.dp
  *
  * @param minText formatted min temperature string, e.g. "12°C"
  * @param maxText formatted max temperature string, e.g. "24°C"
- * @param brightnessFactor [0f..1f] value, usually from sunshineToBrightnessFactor()
+ * @param weatherEmoji usually from sunshineToBrightnessFactor() + emoji picked accordingly in mapper
  */
 @Composable
 fun TemperatureItemWithIcon(
     minText: String,
     maxText: String,
-    brightnessFactor: Float
+    weatherEmoji: String
 ) {
-    // Pick an emoji that matches the sunshine/brightness factor
-    val weatherEmoji = when {
-        brightnessFactor < 0.15f -> "☁\uFE0F"   // ☁️  really gray
-        brightnessFactor < 0.35f -> "\uD83C\uDF25\uFE0F"   // 🌥️  mostly cloudy
-        brightnessFactor < 0.55f -> "\uD83C\uDF25"         // 🌥   partly cloudy (light variant)
-        brightnessFactor < 0.75f -> "\uD83C\uDF24\uFE0F"  // 🌤️  bit sunny
-        else -> "\uD83C\uDF1E"                            // 🌞  full sunny
-    }
-
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally

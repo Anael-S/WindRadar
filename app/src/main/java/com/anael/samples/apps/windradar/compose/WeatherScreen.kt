@@ -26,9 +26,10 @@ fun WeatherScreen(
     citySuggestionViewModel: CitySuggestionViewModel = hiltViewModel(),
     selectedCityVm: SelectedCityViewModel = hiltViewModel(),
 ) {
-    val weatherState by viewModel.weatherState.collectAsState()
     val savedCity by selectedCityVm.city.collectAsStateWithLifecycle()
     val mode by viewModel.mode.collectAsStateWithLifecycle()
+    val dailyState by viewModel.dailyUi.collectAsState()
+    val hourlyState by viewModel.hourlyUi.collectAsState()
 
     Scaffold { padding ->
         Column(
@@ -60,8 +61,10 @@ fun WeatherScreen(
             )
 
             WeatherContent(
-                weatherState = weatherState,
-                onPullToRefresh = viewModel::refreshData,
+                mode = mode,
+                dailyState = dailyState,
+                hourlyState = hourlyState,
+                onPullToRefresh = { viewModel.refreshData() }
             )
         }
     }

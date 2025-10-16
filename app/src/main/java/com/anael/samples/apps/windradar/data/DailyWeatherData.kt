@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  * Data class that represents the weather data from a weather search API
  */
 data class DailyWeatherData(
-    @field:SerializedName("time") private val _time: List<String>,
+    @field:SerializedName("time") val time: List<String>,
     @field:SerializedName("temperature_2m_min") val temperatureMin: List<Double>,
     @field:SerializedName("temperature_2m_max") val temperatureMax: List<Double>,
     @field:SerializedName("wind_speed_10m_max") val windSpeeds: List<Double>,
@@ -16,7 +16,5 @@ data class DailyWeatherData(
     @field:SerializedName("sunshine_duration") val sunshineDuration: List<Double>,
     @field:SerializedName("daylight_duration") val daylightDuration: List<Double>,
 ) {
-    val time: List<String>
-        get() = _time.map { DateUtils.formatToDayWithOrdinalAndMonth(it) }
 }
 

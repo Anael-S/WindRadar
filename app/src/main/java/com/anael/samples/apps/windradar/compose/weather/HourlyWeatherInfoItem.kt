@@ -1,17 +1,30 @@
-package com.anael.samples.apps.windradar.ui.weather
+package com.anael.samples.apps.windradar.compose.weather
 
 import AutoResizeText
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Air
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Thermostat
-import androidx.compose.material.icons.filled.ArrowUpward
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
@@ -19,27 +32,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.anael.samples.apps.windradar.compose.weather.WeatherStatItem
-import com.anael.samples.apps.windradar.compose.weather.computeDaylightFactor
-import com.anael.samples.apps.windradar.compose.weather.rememberSkyGradient
-import com.anael.samples.apps.windradar.compose.weather.valueWithUnit
-import com.anael.samples.apps.windradar.data.HourlyUnitsData
+import com.anael.samples.apps.windradar.compose.weather.model.HourlyUiItem
 
 @Composable
 fun HourlyWeatherInfoItem(
-    time: String,
-    speed: Double,
-    gust: Double,
-    temp: Double,
-    windDirection: Int,
-    cloudCover: Int,
-    units: HourlyUnitsData,
+    item: HourlyUiItem,
     modifier: Modifier = Modifier,
     cornerRadius: Dp = 22.dp,
 ) {
-    // 0 = night, 1 = brightest at noon (smooth sine curve, zero near ~6:00 & ~18:00)
-    val daylight = remember(time) { computeDaylightFactor(time) }
-    val skyBrush = rememberSkyGradient(daylight)
+    val skyBrush = rememberSkyGradient(item.brightnessFactor)
 
     Box(
         modifier
@@ -62,7 +63,7 @@ fun HourlyWeatherInfoItem(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = time,
+                    text = item.time,
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 2,
@@ -78,7 +79,7 @@ fun HourlyWeatherInfoItem(
                 ) {
                     Icon(imageVector = Icons.Filled.Thermostat, contentDescription = "Temperature", tint = MaterialTheme.colorScheme.primary)
                     AutoResizeText(
-                        text = valueWithUnit(temp, units.temperatureUnit, 1),
+                        text = item.tempText,
                         style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Medium),
                         maxLines = 1,
                         minFontSizeSp = 14f,
@@ -101,19 +102,19 @@ fun HourlyWeatherInfoItem(
                     WeatherStatItem(
                         icon = Icons.Filled.Air,
                         label = "Wind",
-                        value = valueWithUnit(speed, units.windSpeedsUnit, 1),
+                        value = item.windText,
                         modifier = Modifier.weight(1f)
                     )
                     WeatherStatItem(
                         icon = Icons.Filled.Air,
                         label = "Gusts",
-                        value = valueWithUnit(gust, units.windGustsUnit, 1),
+                        value = item.gustText,
                         modifier = Modifier.weight(1f)
                     )
                     WeatherStatItem(
                         icon = Icons.Filled.Cloud,
                         label = "Clouds",
-                        value = valueWithUnit(cloudCover, units.cloudCoverUnits),
+                        value = item.cloudsText,
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -131,11 +132,11 @@ fun HourlyWeatherInfoItem(
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .size(20.dp)
-                            .rotate(windDirection.toFloat())
+                            .rotate(item.windDirectionDeg.toFloat())
                     )
                     Spacer(Modifier.width(6.dp))
                     Text(
-                        text = "$windDirection° ${units.windDirectionUnit}",
+                        text = "${item.windDirectionDeg}°",
                         style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Medium),
                         color = MaterialTheme.colorScheme.onSurface
                     )

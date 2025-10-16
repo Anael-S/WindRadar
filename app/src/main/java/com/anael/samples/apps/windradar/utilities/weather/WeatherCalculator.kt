@@ -20,7 +20,6 @@ object WeatherCalculator {
         if (!initialized) {
             appContext = context.applicationContext
             sharedPreferences = context.getSharedPreferences("WeatherAlerts", Context.MODE_PRIVATE)
-            // Your existing init() code here, e.g. load prefs, set up cache
             initialized = true
         }
     }

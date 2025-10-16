@@ -139,7 +139,7 @@ fun sunshineToBrightnessFactor(
         .coerceIn(0f, 1f)
 }
 
-private fun hourToDaylight(hour: Int, minute: Int): Float {
+fun hourToDaylight(hour: Int, minute: Int): Float {
     val hourF = hour + minute / 60f
     // Sine curve: 0 at ~06:00 & ~18:00, peak 1 at 12:00
     val radians = PI * (hourF - 6f) / 12f
