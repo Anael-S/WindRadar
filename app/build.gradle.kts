@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-//    alias(libs.plugins.ksp)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.protobuf)
@@ -83,6 +83,11 @@ android {
     namespace = "com.anael.samples.apps.windradar"
 }
 
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+    arg("room.incremental", "true")
+}
+
 androidComponents {
     onVariants(selector().withBuildType("release")) {
         // Only exclude *.version files in release mode as debug mode requires
@@ -93,7 +98,7 @@ androidComponents {
 
 dependencies {
     implementation(libs.androidx.datastore.core.android)
-//    ksp(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)

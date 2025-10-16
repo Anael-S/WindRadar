@@ -24,5 +24,10 @@
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="time_window">Time window</string>
+    <string name="alerts">Alerts</string>
+    <string name="add_alert">Add alert</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="confirm_delete_alert">Delete this alert?</string>
 
 </resources>

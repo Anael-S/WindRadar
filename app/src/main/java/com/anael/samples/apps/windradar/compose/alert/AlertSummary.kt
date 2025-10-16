@@ -9,25 +9,31 @@ import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.anael.samples.apps.windradar.R
 import com.anael.samples.apps.windradar.compose.alert.model.Alert
+import com.anael.samples.apps.windradar.viewmodels.AlertsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlertSummary(
-    alerts: List<Alert>,
-    onToggle: (id: String, enabled: Boolean) -> Unit,
-    onEdit: (id: String) -> Unit,
-    onDelete: (id: String) -> Unit,
-    onAdd: () -> Unit
+    alertsViewModel: AlertsViewModel = hiltViewModel(),
+    onAdd: () -> Unit // opens your AlertQuickForm
 ) {
+    val alerts by alertsViewModel.alertsUi.collectAsStateWithLifecycle()
+    var pendingDelete by remember { mutableStateOf<Alert?>(null) }
+
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Alerts") }) },
+        topBar = { TopAppBar(title = { Text(stringResource(R.string.alerts)) }) },
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = onAdd,
-                text = { Text("Add alert") },
+                text = { Text(stringResource(R.string.add_alert)) },
                 icon = { Icon(Icons.Rounded.AddAlert, contentDescription = null) }
             )
         }
@@ -39,16 +45,49 @@ fun AlertSummary(
             contentPadding = PaddingValues(12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(alerts, key = { it.id }) { a ->
-                AlertCard(a, onToggle, onEdit, onDelete)
+            items(items = alerts, key = { it.id }) { alert ->
+                AlertCard(
+                    alert = alert,
+                    onToggle = { id, enabled -> alertsViewModel.toggle(id, enabled) },
+                    onEdit = { /* TODO: navigate to edit if you have it */ },
+                    onDelete = { pendingDelete = alert } // open confirm dialog
+                )
             }
         }
+    }
+
+    if (pendingDelete != null) {
+        ConfirmDeleteDialog(
+            onDismiss = { pendingDelete = null },
+            onConfirm = {
+                alertsViewModel.delete(pendingDelete!!.id)
+                pendingDelete = null
+            }
+        )
     }
 }
 
 @Composable
+private fun ConfirmDeleteDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.delete)) },
+        text = { Text(stringResource(R.string.confirm_delete_alert)) },
+        confirmButton = {
+            TextButton(onClick = onConfirm) { Text(stringResource(R.string.delete)) }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) }
+        }
+    )
+}
+
+@Composable
 private fun AlertCard(
-    a: Alert,
+    alert: Alert,
     onToggle: (String, Boolean) -> Unit,
     onEdit: (String) -> Unit,
     onDelete: (String) -> Unit
@@ -61,18 +100,22 @@ private fun AlertCard(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Column(Modifier.weight(1f)) {
-                Text(a.title, style = MaterialTheme.typography.titleMedium)
+                Text(alert.title, style = MaterialTheme.typography.titleMedium)
                 Spacer(Modifier.height(4.dp))
-                Text(a.summary, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    alert.summary,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Switch(checked = a.enabled, onCheckedChange = { onToggle(a.id, it) })
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp), horizontalAlignment = Alignment.End) {
+                Switch(checked = alert.enabled, onCheckedChange = { onToggle(alert.id, it) })
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    IconButton(onClick = { onEdit(a.id) }) {
-                        Icon(Icons.Rounded.Edit, contentDescription = "Edit")
+                    IconButton(onClick = { onEdit(alert.id) }) {
+                        Icon(Icons.Rounded.Edit, contentDescription = stringResource(R.string.edit))
                     }
-                    IconButton(onClick = { onDelete(a.id) }) {
-                        Icon(Icons.Rounded.Delete, contentDescription = "Delete")
+                    IconButton(onClick = { onDelete(alert.id) }) {
+                        Icon(Icons.Rounded.Delete, contentDescription = stringResource(R.string.delete))
                     }
                 }
             }

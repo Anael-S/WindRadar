@@ -19,6 +19,7 @@ import com.anael.samples.apps.windradar.compose.alert.AlertDraft
 import com.anael.samples.apps.windradar.compose.alert.AlertQuickForm
 import com.anael.samples.apps.windradar.compose.settings.SuggestionAddressTextField
 import com.anael.samples.apps.windradar.compose.weather.WeatherContent
+import com.anael.samples.apps.windradar.viewmodels.AlertsViewModel
 import com.anael.samples.apps.windradar.viewmodels.CitySuggestionViewModel
 import com.anael.samples.apps.windradar.viewmodels.SelectedCityViewModel
 import com.anael.samples.apps.windradar.viewmodels.WeatherViewModel
@@ -28,10 +29,11 @@ import com.anael.samples.apps.windradar.viewmodels.WeatherViewModel
 fun WeatherScreen(
     viewModel: WeatherViewModel = hiltViewModel(),
     citySuggestionViewModel: CitySuggestionViewModel = hiltViewModel(),
-    selectedCityVm: SelectedCityViewModel = hiltViewModel(),
+    selectedCityViewModel: SelectedCityViewModel = hiltViewModel(),
+    alertsViewModel: AlertsViewModel = hiltViewModel(),
     onOpenAlerts: () -> Unit = {}
 ) {
-    val savedCity by selectedCityVm.city.collectAsStateWithLifecycle()
+    val savedCity by selectedCityViewModel.city.collectAsStateWithLifecycle()
     val dailyState by viewModel.dailyUi.collectAsStateWithLifecycle()
     val hourlyState by viewModel.hourlyUi.collectAsStateWithLifecycle()
 
@@ -72,7 +74,7 @@ fun WeatherScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp),
                 viewModel = citySuggestionViewModel,
-                onPersistSelected = { selectedCityVm.onCityChosen(it.toCitySelection()) }
+                onPersistSelected = { selectedCityViewModel.onCityChosen(it.toCitySelection()) }
             )
 
             WeatherContent(
@@ -91,8 +93,7 @@ fun WeatherScreen(
             AlertQuickForm(
                 onCancel = { showCreateSheet = false },
                 onSave = { draft: AlertDraft ->
-                    // TODO: write to the repository / automation here
-                    // viewModel.createAlert(draft)
+                    alertsViewModel.createAlert(draft)
                     showCreateSheet = false
                 }
             )

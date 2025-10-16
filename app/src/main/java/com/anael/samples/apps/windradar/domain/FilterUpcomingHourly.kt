@@ -9,7 +9,7 @@ import java.time.temporal.ChronoUnit
  * e.g. at 08:45 -> keep 08:00, 09:00, ...; drop 00:00..07:00.
  *
  * @param nowClock inject for testability; use Clock.systemDefaultZone() in prod.
- * @param inputFormatter matches your API hourly time strings (e.g. "yyyy-MM-dd'T'HH:mm")
+ * @param inputFormatter matches the API hourly time strings (e.g. "yyyy-MM-dd'T'HH:mm")
  * @param zone the timezone that the API timestamps relate to (API tz or device tz).
  */
 class FilterUpcomingHourly(

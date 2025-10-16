@@ -21,17 +21,14 @@ fun AppNavHost(navController: NavHostController) {
         }
 
         composable("alerts") {
-            //TODO: remove this, place holder
-            val sampleAlerts = listOf(
-                Alert("1", "Strong wind alert", true, "Wind ≥ 25 km/h • 06:00–18:00"),
-                Alert("2", "Morning breeze", false, "Wind ≥ 15 km/h • 08:00–12:00")
-            )
             AlertSummary(
-                alerts = sampleAlerts,
-                onToggle = { _, _ -> },
-                onEdit = {},
-                onDelete = {},
-                onAdd = { /* could open bottom sheet again */ }
+                onAdd = {
+                    //TODO:
+                    // Decide what Add should do in alerts screen:
+                    // - open a bottom sheet in the SAME screen (preferred), OR
+                    // - navigate to a "create" route if you have one
+                    // navController.navigate("alerts/create")
+                }
             )
         }
     }
