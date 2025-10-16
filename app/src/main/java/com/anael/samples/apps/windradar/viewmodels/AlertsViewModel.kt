@@ -27,20 +27,20 @@ class AlertsViewModel @Inject constructor(
             .map { uiMapper.mapList(it) }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
-    fun createAlert(draft: AlertDraft) {
+    fun createOrUpdateAlert(draft: AlertDraft) {
         viewModelScope.launch {
             val entity = draft.toEntity()
             repository.upsert(entity)
         }
     }
 
-    fun toggle(id: String, enabled: Boolean) {
+    fun enableAlert(id: String, enabled: Boolean) {
         viewModelScope.launch {
             repository.setEnabled(id, enabled)
         }
     }
 
-    fun delete(id: String) {
+    fun deleteAlert(id: String) {
         viewModelScope.launch { repository.delete(id) }
     }
 }

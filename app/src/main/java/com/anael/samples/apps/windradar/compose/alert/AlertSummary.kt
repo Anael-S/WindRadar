@@ -6,13 +6,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddAlert
 import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -24,16 +22,20 @@ import com.anael.samples.apps.windradar.viewmodels.AlertsViewModel
 @Composable
 fun AlertSummary(
     alertsViewModel: AlertsViewModel = hiltViewModel(),
-    onAdd: () -> Unit // opens your AlertQuickForm
 ) {
     val alerts by alertsViewModel.alertsUi.collectAsStateWithLifecycle()
     var pendingDelete by remember { mutableStateOf<Alert?>(null) }
+
+    // this is the single source of truth for both "create" and "edit", if necessary for later > right now it is not
+    var editingDraft by remember { mutableStateOf<AlertDraft?>(null) }
 
     Scaffold(
         topBar = { TopAppBar(title = { Text(stringResource(R.string.alerts)) }) },
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = onAdd,
+                onClick = {
+                    editingDraft = defaultDraft()
+                },
                 text = { Text(stringResource(R.string.add_alert)) },
                 icon = { Icon(Icons.Rounded.AddAlert, contentDescription = null) }
             )
@@ -49,7 +51,7 @@ fun AlertSummary(
             items(items = alerts, key = { it.id }) { alert ->
                 AlertCard(
                     alert = alert,
-                    onToggle = { id, enabled -> alertsViewModel.toggle(id, enabled) },
+                    onToggle = { id, enabled -> alertsViewModel.enableAlert(id, enabled) },
                     onDelete = { pendingDelete = alert } // open confirm dialog
                 )
             }
@@ -60,12 +62,54 @@ fun AlertSummary(
         ConfirmDeleteDialog(
             onDismiss = { pendingDelete = null },
             onConfirm = {
-                alertsViewModel.delete(pendingDelete!!.id)
+                alertsViewModel.deleteAlert(pendingDelete!!.id)
                 pendingDelete = null
             }
         )
     }
+
+    // bottom sheet for both create & edit
+    if (editingDraft != null) {
+        EditAlertSheet(
+            initial = editingDraft!!,
+            onDismiss = { editingDraft = null },
+            onSave = { draft ->
+                alertsViewModel.createOrUpdateAlert(draft)
+                editingDraft = null
+            }
+        )
+    }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun EditAlertSheet(
+    initial: AlertDraft,
+    onDismiss: () -> Unit,
+    onSave: (AlertDraft) -> Unit
+) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
+        AlertQuickForm(
+            onCancel = onDismiss,
+            onSave = onSave
+        )
+        // If you want the form prefilled when editing, make AlertQuickForm accept `initial`
+        // and initialize its state from it; for create just pass `defaultDraft()`.
+    }
+}
+
+
+fun defaultDraft() = AlertDraft(
+    name = "",
+    windMin = 15f,
+    gustMin = 25f,
+    dirStart = null,
+    dirEnd = null,
+    startHour = 6,
+    endHour = 18,
+    enabled = true
+)
 
 @Composable
 private fun ConfirmDeleteDialog(

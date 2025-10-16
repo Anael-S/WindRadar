@@ -12,7 +12,7 @@ class AlertUiMapper @Inject constructor(
 ) {
 
     fun mapEntity(entity: AlertEntity): Alert {
-        val title = entity.name ?: context.getString(R.string.create_alert)
+        val title = entity.name ?: context.getString(R.string.alert)
 
         val windPart = " • " + context.getString(R.string.label_wind_threshold, entity.windMin)
         val gustPart = if (entity.gustMin > 0) {

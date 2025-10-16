@@ -21,15 +21,7 @@ fun AppNavHost(navController: NavHostController) {
         }
 
         composable("alerts") {
-            AlertSummary(
-                onAdd = {
-                    //TODO:
-                    // Decide what Add should do in alerts screen:
-                    // - open a bottom sheet in the SAME screen (preferred), OR
-                    // - navigate to a "create" route if you have one
-                    // navController.navigate("alerts/create")
-                }
-            )
+            AlertSummary()
         }
     }
 }
