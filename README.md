@@ -51,11 +51,11 @@ WindRadar is built with **MVVM** (Model–View–ViewModel) using reactive `Flow
 
 WindRadar demonstrates several **Dependency Injection** techniques:
 
-| Purpose | Technology | Description |
-|----------|-------------|-------------|
-| **API & Network** | Hilt / Dagger | Injects Retrofit services and repositories for fetching weather and city data |
-| **Local Database** | Room | Stores and retrieves user-defined alerts |
-| **Preferences** | DataStore (Proto) | Persists the last selected city locally (`.pb` file) |
+| Purpose | Technology | Description                                                                             |
+|----------|-------------|-----------------------------------------------------------------------------------------|
+| **API & Network** | Hilt / Dagger | Injects Retrofit services and repositories for fetching weather and city data           |
+| **Local Database** | Room | Stores and retrieves user-defined alerts  (`.db` file)                                  |
+| **Preferences** | DataStore (Proto) | Persists the last selected city locally (`.pb` file)                                    |
 | **Background Work** | WorkManager | Injected `AlertCheckWorker` runs hourly to analyze conditions and trigger notifications |
 
 All dependencies are managed through **Hilt modules**, making the code clean, testable, and lifecycle-safe.
