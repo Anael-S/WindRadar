@@ -48,7 +48,6 @@ class AlertCheckWorker @AssistedInject constructor(
                 endHour = alert.endHour,
                 maxDayForward = 1
             )
-            android.util.Log.d("AlertCheckWorker", "Alert check done, alert needed? " + result.shouldAlert)
             if (result.shouldAlert) {
                 NotificationUtils.showWindAlertNotification(applicationContext, result)
             }
