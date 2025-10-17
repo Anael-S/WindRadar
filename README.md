@@ -49,29 +49,34 @@ WindRadar is built with **MVVM** (Model–View–ViewModel) using reactive `Flow
 
 ## 🧩 Dependency Injection (DI)
 
-WindRadar demonstrates several Dependency Injection techniques:
+WindRadar demonstrates several **Dependency Injection** techniques:
 
-Purpose	Technology	Description
-API & Network	Hilt / Dagger	Injects Retrofit services and repositories for fetching weather and city data
-Local Database	Room	Stores and retrieves user-defined alerts
-Preferences	DataStore (Proto)	Persists the last selected city locally (.pb file)
-Background Work	WorkManager	Injected AlertCheckWorker runs hourly to analyze conditions and trigger notifications
+| Purpose | Technology | Description |
+|----------|-------------|-------------|
+| **API & Network** | Hilt / Dagger | Injects Retrofit services and repositories for fetching weather and city data |
+| **Local Database** | Room | Stores and retrieves user-defined alerts |
+| **Preferences** | DataStore (Proto) | Persists the last selected city locally (`.pb` file) |
+| **Background Work** | WorkManager | Injected `AlertCheckWorker` runs hourly to analyze conditions and trigger notifications |
 
-All dependencies are managed through Hilt modules, making the code clean, testable, and lifecycle-safe.
+All dependencies are managed through **Hilt modules**, making the code clean, testable, and lifecycle-safe.
+
+---
 
 ## 🧰 Tech Stack
-Category	Technology
-Language	Kotlin
-UI	Jetpack Compose + Material 3
-Architecture	MVVM + Clean Architecture
-Dependency Injection	Hilt / Dagger
-Async / Reactive	Coroutines + Flow
-Networking	Retrofit + OkHttp
-Local Storage	Room (SQLite)
-Preferences	DataStore (Proto)
-Background Work	WorkManager
-Logging	Timber / Logcat
-Build Tools	Gradle (KTS)
+
+| Category | Technology |
+|-----------|-------------|
+| **Language** | Kotlin |
+| **UI** | Jetpack Compose + Material 3 |
+| **Architecture** | MVVM + Clean Architecture |
+| **Dependency Injection** | Hilt / Dagger |
+| **Async / Reactive** | Coroutines + Flow |
+| **Networking** | Retrofit + OkHttp |
+| **Local Storage** | Room (SQLite) |
+| **Preferences** | DataStore (Proto) |
+| **Background Work** | WorkManager |
+| **Logging** | Timber / Logcat |
+| **Build Tools** | Gradle (KTS) |
 
 ## 🎨 User Interface
 
