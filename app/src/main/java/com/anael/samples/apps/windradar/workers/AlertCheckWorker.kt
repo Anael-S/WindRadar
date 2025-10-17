@@ -49,7 +49,10 @@ class AlertCheckWorker @AssistedInject constructor(
                 hourlyWeatherData = hourlyWeatherData.hourlyWeatherData,
                 windThreshold = alert.windMin,
                 gustThreshold = alert.gustMin,
-                maxDayForward = 1 //TODO: change this, add it in the settings too
+                startHour = alert.startHour,
+                endHour = alert.endHour,
+                maxDayForward = 1
+                // directions = null, dirStart = null, dirEnd = null
             )
             android.util.Log.d("AlertCheckWorker", "Alert check done, alert needed? " + result.shouldAlert)
             if (result.shouldAlert) {

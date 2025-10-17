@@ -35,15 +35,33 @@ object WeatherCalculator {
         val hoursAboveThreshold: Int = 0  // longest consecutive hours above threshold within maxDayForward
     )
 
+    private fun withinTimeWindow(h: Int, start: Int, end: Int): Boolean {
+        // supports windows like 22 -> 6 (wrap across midnight)
+        return if (start <= end) h in start..end else (h >= start || h <= end)
+    }
+
+    private fun withinDirWindow(dir: Int, start: Int, end: Int): Boolean {
+        // supports windows like 300 -> 60 (wrap across 360/0)
+        val s = (start % 361 + 361) % 361
+        val e = (end % 361 + 361) % 361
+        return if (s <= e) dir in s..e else (dir >= s || dir <= e)
+    }
+
     fun calculateIfAlertIsNecessary(
         context: Context,
         hourlyWeatherData: HourlyWeatherData,
-        windThreshold: Float = 40f,
-        gustThreshold: Float = 40f,
-        maxDayForward: Int = 1
+        windThreshold: Float,                 // min wind
+        gustThreshold: Float,                 // min gust
+        startHour: Int,                       // 0..23
+        endHour: Int,                         // 0..23  (supports wrap-around  e.g. 22->6)
+        maxDayForward: Int = 1,
+        directions: List<Int>? = null,        // OPTIONAL: degrees 0..360 per hour (same indexing as times)
+        dirStart: Int? = null,
+        dirEnd: Int? = null
     ): AlertResult {
         ensureInitialized(context)
-        val timestamps = hourlyWeatherData.timeFormatted
+
+        val timestamps = hourlyWeatherData.rawTime
         val windSpeeds = hourlyWeatherData.windSpeeds
         val gustSpeeds = hourlyWeatherData.windGusts
 
@@ -53,70 +71,78 @@ object WeatherCalculator {
         val outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm", Locale("nl", "NL"))
         val dateKeyFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
-        val now = LocalDateTime.now(ZoneId.of("Europe/Amsterdam"))
+        val zone = ZoneId.of("Europe/Amsterdam")
+        val now = LocalDateTime.now(zone)
         val cutoffDate = now.plusDays(maxDayForward.toLong())
 
         var currentStreak = 0
         var maxStreak = 0
 
-        // Count longest streak only within maxDayForward window
+        // 1) Compute longest streak but ONLY inside the future window and inside the selected time window (+ optional direction)
         for (i in timestamps.indices) {
             val timeStr = timestamps[i]
-            val windSpeed = windSpeeds.getOrNull(i) ?: continue
-            val gustSpeed = gustSpeeds.getOrNull(i) ?: continue
+            val wind = windSpeeds.getOrNull(i) ?: continue
+            val gust = gustSpeeds.getOrNull(i) ?: continue
 
-            val alertTime = try {
-                LocalDateTime.parse(timeStr, inputFormatter)
-            } catch (e: Exception) {
-                continue
-            }
+            val t = try { LocalDateTime.parse(timeStr, inputFormatter) } catch (_: Exception) { continue }
 
-            if (alertTime.isBefore(now)) {
-                currentStreak = 0
-                continue
-            }
-            if (alertTime.isAfter(cutoffDate)) {
-                // Stop processing timestamps beyond cutoffDate
-                break
-            }
+            if (t.isBefore(now)) { currentStreak = 0; continue }
+            if (t.isAfter(cutoffDate)) break
 
-            val isAboveThreshold = (windSpeed > windThreshold) || (gustSpeed > gustThreshold)
-            if (isAboveThreshold) {
-                currentStreak++
-                if (currentStreak > maxStreak) {
-                    maxStreak = currentStreak
+            val hour = t.hour
+            if (!withinTimeWindow(hour, startHour, endHour)) { currentStreak = 0; continue }
+
+            // Optional direction filter if provided + bounds set
+            if (directions != null && dirStart != null && dirEnd != null) {
+                val dir = directions.getOrNull(i)
+                if (dir == null || !withinDirWindow(dir, dirStart, dirEnd)) {
+                    currentStreak = 0
+                    continue
                 }
+            }
+
+            val isAbove = (wind >= windThreshold) || (gust >= gustThreshold)
+            if (isAbove) {
+                currentStreak++
+                if (currentStreak > maxStreak) maxStreak = currentStreak
             } else {
                 currentStreak = 0
             }
         }
 
-        // Find first alert in window to trigger alert and save it
+        // 2) Find first alert occurrence in the selected window (future only), not already alerted for that day
         for (i in timestamps.indices) {
             val timeStr = timestamps[i]
-            val windSpeed = windSpeeds.getOrNull(i) ?: continue
-            val gustSpeed = gustSpeeds.getOrNull(i) ?: continue
+            val wind = windSpeeds.getOrNull(i) ?: continue
+            val gust = gustSpeeds.getOrNull(i) ?: continue
 
-            val alertTime = try {
-                LocalDateTime.parse(timeStr, inputFormatter)
-            } catch (e: Exception) {
-                continue
+            val t = try { LocalDateTime.parse(timeStr, inputFormatter) } catch (_: Exception) { continue }
+
+            if (t.isBefore(now)) continue
+            if (t.isAfter(cutoffDate)) break
+
+            val hour = t.hour
+            if (!withinTimeWindow(hour, startHour, endHour)) continue
+
+            if (directions != null && dirStart != null && dirEnd != null) {
+                val dir = directions.getOrNull(i) ?: continue
+                if (!withinDirWindow(dir, dirStart, dirEnd)) continue
             }
 
-            val dayKey = alertTime.format(dateKeyFormatter)
-
-            val isAlert = (windSpeed > windThreshold) || (gustSpeed > gustThreshold)
-
-            if (
-                isAlert &&
-                alertTime.isAfter(now) &&
-                alertTime.isBefore(cutoffDate) &&
-                !alertedDays.contains(dayKey)
-            ) {
-                saveAlertForDay(context, dayKey)
-                val readableTime = alertTime.format(outputFormatter)
-                val windSpeedStr = if (gustSpeed > gustThreshold) gustSpeed.toString() else windSpeed.toString()
-                return AlertResult(true, readableTime, windSpeedStr, maxStreak)
+            val isAlert = (wind >= windThreshold) || (gust >= gustThreshold)
+            if (isAlert) {
+                val dayKey = t.format(dateKeyFormatter)
+                if (!alertedDays.contains(dayKey)) {
+                    saveAlertForDay(context, dayKey)
+                    val readableTime = t.format(outputFormatter)
+                    val windStr = if (gust >= gustThreshold) gust.toString() else wind.toString()
+                    return AlertResult(
+                        shouldAlert = true,
+                        alertTime = readableTime,
+                        windSpeed = windStr,
+                        hoursAboveThreshold = maxStreak
+                    )
+                }
             }
         }
 
