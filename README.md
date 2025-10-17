@@ -94,8 +94,6 @@ Anaël
 Android Developer passionate about modern, scalable, and reactive mobile architectures.
 📍 Built with love, Kotlin, and wind.
 
-GitHub: @anael-dev
+GitHub: @Anael-S
 
-LinkedIn: linkedin.com/in/anael-dev
-
-Twitter: @anael_codes
+LinkedIn: https://www.linkedin.com/in/anael-savoyant-651469117/
