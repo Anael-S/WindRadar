@@ -54,10 +54,7 @@ object WeatherCalculator {
         gustThreshold: Float,                 // min gust
         startHour: Int,                       // 0..23
         endHour: Int,                         // 0..23  (supports wrap-around  e.g. 22->6)
-        maxDayForward: Int = 1,
-        directions: List<Int>? = null,
-        dirStart: Int? = null,
-        dirEnd: Int? = null
+        maxDayForward: Int = 3,
     ): AlertResult {
         ensureInitialized(context)
 
@@ -92,15 +89,6 @@ object WeatherCalculator {
             val hour = t.hour
             if (!withinTimeWindow(hour, startHour, endHour)) { currentStreak = 0; continue }
 
-            // Optional direction filter if provided + bounds set
-            if (directions != null && dirStart != null && dirEnd != null) {
-                val dir = directions.getOrNull(i)
-                if (dir == null || !withinDirWindow(dir, dirStart, dirEnd)) {
-                    currentStreak = 0
-                    continue
-                }
-            }
-
             val isAbove = (wind >= windThreshold) || (gust >= gustThreshold)
             if (isAbove) {
                 currentStreak++
@@ -123,11 +111,6 @@ object WeatherCalculator {
 
             val hour = t.hour
             if (!withinTimeWindow(hour, startHour, endHour)) continue
-
-            if (directions != null && dirStart != null && dirEnd != null) {
-                val dir = directions.getOrNull(i) ?: continue
-                if (!withinDirWindow(dir, dirStart, dirEnd)) continue
-            }
 
             val isAlert = (wind >= windThreshold) || (gust >= gustThreshold)
             if (isAlert) {

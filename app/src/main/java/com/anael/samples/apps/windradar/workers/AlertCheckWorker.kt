@@ -1,14 +1,9 @@
 package com.anael.samples.apps.windradar.workers
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Context
-import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.anael.samples.apps.windradar.R
 import com.anael.samples.apps.windradar.data.CitySelectionRepository
 import com.anael.samples.apps.windradar.data.WindRepository
 import com.anael.samples.apps.windradar.data.local.AlertRepository
@@ -52,7 +47,6 @@ class AlertCheckWorker @AssistedInject constructor(
                 startHour = alert.startHour,
                 endHour = alert.endHour,
                 maxDayForward = 1
-                // directions = null, dirStart = null, dirEnd = null - for now
             )
             android.util.Log.d("AlertCheckWorker", "Alert check done, alert needed? " + result.shouldAlert)
             if (result.shouldAlert) {
