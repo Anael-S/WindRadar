@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "a29ca2724fa34174ee9950c562c4c2da",
+    "identityHash": "9e710a765f5e491196bf0c375f237483",
     "entities": [
       {
         "tableName": "alerts",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT, `windMin` REAL NOT NULL, `gustMin` REAL NOT NULL, `dirStart` INTEGER, `dirEnd` INTEGER, `startHour` INTEGER NOT NULL, `endHour` INTEGER NOT NULL, `enabled` INTEGER NOT NULL, `createdAt` INTEGER NOT NULL, `cityName` TEXT, `latitude` REAL, `longitude` REAL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT, `windMin` REAL NOT NULL, `gustMin` REAL NOT NULL, `startHour` INTEGER NOT NULL, `endHour` INTEGER NOT NULL, `enabled` INTEGER NOT NULL, `createdAt` INTEGER NOT NULL, `cityName` TEXT, `latitude` REAL, `longitude` REAL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -31,18 +31,6 @@
             "columnName": "gustMin",
             "affinity": "REAL",
             "notNull": true
-          },
-          {
-            "fieldPath": "dirStart",
-            "columnName": "dirStart",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "dirEnd",
-            "columnName": "dirEnd",
-            "affinity": "INTEGER",
-            "notNull": false
           },
           {
             "fieldPath": "startHour",
@@ -119,7 +107,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a29ca2724fa34174ee9950c562c4c2da')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9e710a765f5e491196bf0c375f237483')"
     ]
   }
 }

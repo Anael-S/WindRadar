@@ -15,8 +15,6 @@ data class AlertDraft(
     val name: String,
     val windMin: Float,
     val gustMin: Float,
-    val dirStart: Int?,
-    val dirEnd: Int?,
     val startHour: Int,
     val endHour: Int,
     val enabled: Boolean = true
@@ -30,11 +28,10 @@ fun AlertQuickForm(
     var name by remember { mutableStateOf("") }
     var wind by remember { mutableFloatStateOf(15f) }
     var gust by remember { mutableFloatStateOf(25f) }
-    var dirEnabled by remember { mutableStateOf(false) }
     var dirStart by remember { mutableFloatStateOf(0f) }
     var dirEnd by remember { mutableFloatStateOf(360f) }
-    var startHour by remember { mutableFloatStateOf(6f) }
-    var endHour by remember { mutableFloatStateOf(18f) }
+    var startHour by remember { mutableFloatStateOf(0f) }
+    var endHour by remember { mutableFloatStateOf(24f) }
 
     Column(
         modifier = Modifier
@@ -66,23 +63,6 @@ fun AlertQuickForm(
             valueRange = 0f..100f
         )
 
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Switch(checked = dirEnabled, onCheckedChange = { dirEnabled = it })
-            Text(stringResource(R.string.limit_wind_direction))
-        }
-        if (dirEnabled) {
-            RangeRow(
-                labelStart = stringResource(R.string.from),
-                startValue = dirStart,
-                onStartChange = { dirStart = it },
-                labelEnd = stringResource(R.string.to),
-                endValue = dirEnd,
-                onEndChange = { dirEnd = it },
-                range = 0f..360f,
-                step = 1
-            )
-        }
-
         Text(stringResource(R.string.time_window))
         RangeRow(
             labelStart = stringResource(R.string.start),
@@ -105,8 +85,6 @@ fun AlertQuickForm(
                             name = name.trim(),
                             windMin = wind,
                             gustMin = gust,
-                            dirStart = if (dirEnabled) dirStart.toInt() else null,
-                            dirEnd = if (dirEnabled) dirEnd.toInt() else null,
                             startHour = startHour.toInt(),
                             endHour = endHour.toInt(),
                         )

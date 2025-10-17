@@ -55,7 +55,7 @@ object WeatherCalculator {
         startHour: Int,                       // 0..23
         endHour: Int,                         // 0..23  (supports wrap-around  e.g. 22->6)
         maxDayForward: Int = 1,
-        directions: List<Int>? = null,        // OPTIONAL: degrees 0..360 per hour (same indexing as times)
+        directions: List<Int>? = null,
         dirStart: Int? = null,
         dirEnd: Int? = null
     ): AlertResult {

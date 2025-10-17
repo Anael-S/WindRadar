@@ -13,8 +13,6 @@ data class AlertEntity(
     val name: String?,
     val windMin: Float,
     val gustMin: Float,
-    val dirStart: Int?,                     // nullable if user doesn’t set
-    val dirEnd: Int?,                       // nullable
     val startHour: Int,                     // 0..23
     val endHour: Int,                       // 0..23
     val enabled: Boolean = true,
