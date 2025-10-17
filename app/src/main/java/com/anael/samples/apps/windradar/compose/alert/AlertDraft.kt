@@ -28,8 +28,6 @@ fun AlertQuickForm(
     var name by remember { mutableStateOf("") }
     var wind by remember { mutableFloatStateOf(15f) }
     var gust by remember { mutableFloatStateOf(25f) }
-    var dirStart by remember { mutableFloatStateOf(0f) }
-    var dirEnd by remember { mutableFloatStateOf(360f) }
     var startHour by remember { mutableFloatStateOf(0f) }
     var endHour by remember { mutableFloatStateOf(24f) }
 
