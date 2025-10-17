@@ -39,6 +39,7 @@ class AlertsViewModel @Inject constructor(
     fun enableAlert(id: String, enabled: Boolean) {
         viewModelScope.launch {
             repository.setEnabled(id, enabled)
+            if (enabled) alertCheckLauncher.runNow()
         }
     }
 
