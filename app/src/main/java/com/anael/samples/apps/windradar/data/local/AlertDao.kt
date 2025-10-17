@@ -12,6 +12,9 @@ interface AlertDao {
     @Query("SELECT * FROM alerts WHERE enabled = 1 ORDER BY createdAt DESC")
     fun observeEnabled(): Flow<List<AlertEntity>>
 
+    @Query("SELECT * FROM alerts WHERE enabled = 1 ORDER BY name COLLATE NOCASE")
+    suspend fun getEnabled(): List<AlertEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(alert: AlertEntity)
 

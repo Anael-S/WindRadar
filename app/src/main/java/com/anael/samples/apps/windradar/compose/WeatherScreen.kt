@@ -93,7 +93,7 @@ fun WeatherScreen(
             AlertQuickForm(
                 onCancel = { showCreateSheet = false },
                 onSave = { draft: AlertDraft ->
-                    alertsViewModel.createOrUpdateAlert(draft)
+                    alertsViewModel.createOrUpdateAlertAndRunCheck(draft)
                     showCreateSheet = false
                 }
             )

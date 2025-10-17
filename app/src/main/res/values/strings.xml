@@ -31,5 +31,8 @@
     <string name="delete">Delete</string>
     <string name="confirm_delete_alert">Delete this alert?</string>
     <string name="back">Back</string>
+    <string name="wind_alert_message_format">Wind/gust %1$s km/h expected around %2$s. Longest streak: %3$d h.</string>
+
+    <string name="alert_notification_title">⚠️ Strong Wind Alert</string>
 
 </resources>

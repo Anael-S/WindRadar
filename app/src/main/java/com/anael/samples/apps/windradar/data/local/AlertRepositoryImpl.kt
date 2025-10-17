@@ -13,4 +13,5 @@ class AlertRepositoryImpl @Inject constructor(
     override suspend fun upsert(alert: AlertEntity) = dao.upsert(alert)
     override suspend fun delete(id: String) = dao.deleteById(id)
     override suspend fun setEnabled(id: String, enabled: Boolean) = dao.setEnabled(id, enabled)
+    override suspend fun getEnabledAlerts(): List<AlertEntity> = dao.getEnabled()
 }

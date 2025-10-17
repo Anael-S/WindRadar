@@ -38,8 +38,8 @@ object WeatherCalculator {
     fun calculateIfAlertIsNecessary(
         context: Context,
         hourlyWeatherData: HourlyWeatherData,
-        windThreshold: Int = 40,
-        gustThreshold: Int = 40,
+        windThreshold: Float = 40f,
+        gustThreshold: Float = 40f,
         maxDayForward: Int = 1
     ): AlertResult {
         ensureInitialized(context)
@@ -122,10 +122,6 @@ object WeatherCalculator {
 
         return AlertResult(false, null, null, maxStreak)
     }
-
-
-
-
 
     private fun getAlertedDays(context: Context): Set<String> {
         ensureInitialized(context)

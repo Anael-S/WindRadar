@@ -88,7 +88,7 @@ fun AlertSummary(
             initial = editingDraft!!,
             onDismiss = { editingDraft = null },
             onSave = { draft ->
-                alertsViewModel.createOrUpdateAlert(draft)
+                alertsViewModel.createOrUpdateAlertAndRunCheck(draft)
                 editingDraft = null
             }
         )

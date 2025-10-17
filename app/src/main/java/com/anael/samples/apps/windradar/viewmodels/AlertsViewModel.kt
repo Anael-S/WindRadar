@@ -7,6 +7,7 @@ import com.anael.samples.apps.windradar.compose.alert.AlertUiMapper
 import com.anael.samples.apps.windradar.compose.alert.model.Alert
 import com.anael.samples.apps.windradar.data.local.AlertEntity
 import com.anael.samples.apps.windradar.data.local.AlertRepository
+import com.anael.samples.apps.windradar.workers.AlertCheckLauncher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +20,8 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class AlertsViewModel @Inject constructor(
     private val repository: AlertRepository,
-    private val uiMapper: AlertUiMapper
+    private val uiMapper: AlertUiMapper,
+    private val alertCheckLauncher: AlertCheckLauncher
 ) : ViewModel() {
 
     val alertsUi: StateFlow<List<Alert>> =
@@ -43,6 +45,13 @@ class AlertsViewModel @Inject constructor(
     fun deleteAlert(id: String) {
         viewModelScope.launch { repository.delete(id) }
     }
+
+    fun createOrUpdateAlertAndRunCheck(draft: AlertDraft) =
+        viewModelScope.launch {
+            val entity = draft.toEntity()
+            repository.upsert(entity)
+            alertCheckLauncher.runNow()                       // trigger the worker once
+        }
 }
 
 private fun AlertDraft.toEntity(): AlertEntity = AlertEntity(

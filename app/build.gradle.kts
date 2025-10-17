@@ -98,6 +98,8 @@ androidComponents {
 
 dependencies {
     implementation(libs.androidx.datastore.core.android)
+    implementation(libs.androidx.hilt.common)
+    implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
@@ -119,6 +121,7 @@ dependencies {
     implementation(libs.protobuflib)
     implementation(libs.androidx.datastore.core.android)
     kapt(libs.hilt.android.compiler)
+    kapt(libs.hilt.compiler)
 
 
     // Compose
