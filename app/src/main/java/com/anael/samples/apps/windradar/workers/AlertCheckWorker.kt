@@ -12,6 +12,7 @@ import com.anael.samples.apps.windradar.R
 import com.anael.samples.apps.windradar.data.CitySelectionRepository
 import com.anael.samples.apps.windradar.data.WindRepository
 import com.anael.samples.apps.windradar.data.local.AlertRepository
+import com.anael.samples.apps.windradar.utilities.NotificationUtils
 import com.anael.samples.apps.windradar.utilities.weather.WeatherCalculator
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -27,7 +28,6 @@ class AlertCheckWorker @AssistedInject constructor(
 ) : CoroutineWorker(appContext, params) {
 
     override suspend fun doWork(): Result {
-        android.util.Log.d("AlertCheckWorker", "Starting doWork()")
         val city = cityRepo.selectedCity.first()
             ?: //0 - No city selected — nothing to check
             return Result.success()
@@ -56,41 +56,12 @@ class AlertCheckWorker @AssistedInject constructor(
             )
             android.util.Log.d("AlertCheckWorker", "Alert check done, alert needed? " + result.shouldAlert)
             if (result.shouldAlert) {
-                postNotification(
-                    title = applicationContext.getString(R.string.alert_notification_title),
-                    message = applicationContext.getString(
-                        R.string.wind_alert_message_format,
-                        result.windSpeed ?: "—",
-                        result.alertTime ?: "—",
-                        result.hoursAboveThreshold
-                    )
-                )
+                NotificationUtils.showWindAlertNotification(applicationContext, result)
             }
         }
 
-        android.util.Log.d("AlertCheckWorker", "Finished doWork()")
         // 4) Tell WorkManager we succeeded (even if no alerts fired)
         return Result.success()
     }
 
-    private fun postNotification(title: String, message: String) {
-        val channelId = "wind_alerts"
-        val nm = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        val channel = NotificationChannel(
-            channelId, applicationContext.getString(R.string.alerts),
-            NotificationManager.IMPORTANCE_DEFAULT
-        )
-        nm.createNotificationChannel(channel)
-
-        val notification: Notification = NotificationCompat.Builder(applicationContext, channelId)
-            .setSmallIcon(android.R.drawable.ic_dialog_alert)
-            .setContentTitle(title)
-            .setContentText(message)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(message))
-            .setAutoCancel(true)
-            .build()
-
-        nm.notify((System.currentTimeMillis() % Int.MAX_VALUE).toInt(), notification)
-    }
 }
