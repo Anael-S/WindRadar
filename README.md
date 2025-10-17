@@ -17,7 +17,6 @@ It’s designed as a showcase of **modern Android development best practices**, 
   <img src="screenshots/weather_screen.png" width="220" alt="Weather screen" style="margin: 8px; border-radius: 12px;"/>
   <img src="screenshots/alert_screen.png" width="220" alt="Alert list screen" style="margin: 8px; border-radius: 12px;"/>
   <img src="screenshots/create_alert_screen.png" width="220" alt="Create alert screen" style="margin: 8px; border-radius: 12px;"/>
-  <img src="screenshots/notification.png" width="220" alt="Notification example" style="margin: 8px; border-radius: 12px;"/>
 </p>
 
 ## 🎯 Features
