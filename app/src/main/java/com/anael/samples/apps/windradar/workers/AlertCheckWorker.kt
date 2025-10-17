@@ -52,7 +52,7 @@ class AlertCheckWorker @AssistedInject constructor(
                 startHour = alert.startHour,
                 endHour = alert.endHour,
                 maxDayForward = 1
-                // directions = null, dirStart = null, dirEnd = null
+                // directions = null, dirStart = null, dirEnd = null - for now
             )
             android.util.Log.d("AlertCheckWorker", "Alert check done, alert needed? " + result.shouldAlert)
             if (result.shouldAlert) {
