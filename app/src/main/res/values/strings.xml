@@ -34,5 +34,6 @@
     <string name="wind_alert_message_format">Wind/gust %1$s km/h expected around %2$s. Longest streak: %3$d h.</string>
 
     <string name="alert_notification_title">⚠️ Strong Wind Alert</string>
+    <string name="alert_notification_message">Wind or gusts: %1$s km/h on %2$s</string>
 
 </resources>

@@ -9,6 +9,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import com.anael.samples.apps.windradar.R
 import com.anael.samples.apps.windradar.utilities.weather.WeatherCalculator
 
 object NotificationUtils {
@@ -44,11 +45,8 @@ object NotificationUtils {
         // 3) Build the notification (consider adding a PendingIntent to open the app)
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_dialog_alert)
-            .setContentTitle("⚠️ Strong Wind Alert")
-            .setContentText(
-                "Wind or gusts: ${alertResult.windSpeed} km/h at ${alertResult.alertTime} " +
-                        "for ${alertResult.hoursAboveThreshold} hours"
-            )
+            .setContentTitle(context.getString(R.string.alert_notification_title))
+            .setContentText(context.getString(R.string.alert_notification_message, alertResult.windSpeed, alertResult.alertTime))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
 
